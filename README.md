@@ -1,2 +1,2 @@
 # pyRaccoon
-a simple blog server base on python and 
+a simple blog server base on python 
