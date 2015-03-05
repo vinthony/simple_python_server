@@ -226,7 +226,7 @@ def _update(sql,*args): #update函数 包括update/delete
 	global _db_ctx
 	cursor = None
 	sql = sql.replace('?','%s')
-	logging.info('SQL:%s,ARGS:%s' % (sql,args))
+	logging.warning('SQL:%s,ARGS:%s' % (sql,args))
 	try:
 		cursor = _db_ctx.connection.cursor()
 		cursor.execute(sql,args)
@@ -244,11 +244,11 @@ def insert(table,**kw):#insert table 数据
 	sql = 'insert into `%s` (%s) values (%s)' % (table,','.join(['`%s`' % col for col in cols]),','.join(['?' for i in range(len(cols))]))
 	return _update(sql,*args)
 
-def update(sql,**args):
-	return _update(sql,**args)
+def update(sql,*args):
+	return _update(sql,*args)
 
 if __name__ == '__main__': #
-	logging.basicConfig(level=logging.DEBUG)
+	logging.basicConfig(level=logging.INFO)
 	u1 = dict(id=2000, name='Bob', email='bob@test.org', password='bobobob', last_modified=time.time())
 	create_engine('root','123456','test')
 	update('drop table if exists user')

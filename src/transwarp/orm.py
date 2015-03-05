@@ -114,31 +114,32 @@ class ModelMetaclass(type):
 			cls.subclasses[name] = name
 		else:
 			logging.warning('redefine class:%s' % name)				
-
 		logging.info('scan ormapping %s...' % name)
-		mappings = dict()
+		mappings = dict()#创建一个新的mapping
 		primary_key = None
-		for k,v in attrs.iteritems():
+		for k,v in attrs.iteritems():#如果v是filed的实例
 			if isinstance(v,Field):
 				if not v.name:
 					v.name = k
-				logging,info('Found mapping:%s => %s' %(k,v))
+				logging.warning('Found mapping:%s => %s' %(k,v))
 				if v.primary_key:
 					if primary_key:
 						raise TypeError('Cannot define more than 1 primary key in class:%s'% name)		
 					if v.updatable:
-						logging.warning('NOTE: change primary_key to non-updatable.')
+						logging.warning('NOTE: here change primary_key to non-updatable.')
+						v.updatable = False
 					if v.nullable:
 						logging.warning('NOTE: change primary_key to non-updatable')
 						v.nullable = False
 					primary_key = v	
-			mappings[k] = v
+				mappings[k] = v
 		if not primary_key:
 			raise TypeError('Primary key not defined in class:%s' % name)
 		for k in mappings.iterkeys():
 			attrs.pop(k)
 		if not '__table__' in attrs:
 			attrs['__table__'] = name.lower()
+		logging.warning(mappings)
 		attrs['__mappings__'] = mappings
 		attrs['__primary_key__'] = primary_key
 		attrs['__sql__'] = lambda self:_gen_sql(attrs['__table__'],mappings)
@@ -209,13 +210,14 @@ class Model(dict):
 	def delete(self):
 		self.pre_delete and self.pre_delete()
 		pk = self.__primary_key__.name
-		args = (getattr(self,pk))
+		args = (getattr(self,pk),)
 		db.update('delete from `%s` where `%s`=?' % (self.__table__,pk),*args)
 		return self
 
 	def insert(self):
 		self.pre_insert and self.pre_insert()
 		params = {}
+		logging.warning(self.__mappings__)
 		for k,v in self.__mappings__.iteritems():
 			if v.insertable:
 				if not hasattr(self,k):
@@ -225,9 +227,8 @@ class Model(dict):
 		return self
 
 	if __name__ == '__main__':
-		logging.basicConfig(level=logging.DEBUG)
+		logging.basicConfig(level=logging.INFO)
 		db.create_engine('root','123456','test')
 		db.update('drop table if exists user')
 		db.update('create table user (id int primary key,name text,email text,passwd text,last_modified real)')	
-		db.insert()
 
