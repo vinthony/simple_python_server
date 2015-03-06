@@ -7,7 +7,7 @@ __author__ = 'vinthony@gmail.com'
 A simple web framework
 '''
 
-import types,os,re,cgi,sys,time,datatime,functools,mimetypes,threading,logging,urllib,trackback
+import types,os,re,cgi,sys,time,datetime,functools,mimetypes,threading,logging,urllib,traceback
 
 try:
 	from cStringIO import StringIO
@@ -16,9 +16,8 @@ except ImportError:
 
 ctx = threading.local() #创建唯一线程上下文
 
-class Dict(dict): #DICT helper
-	"""docstring for Dict"""
-	def __init__(self, names=(), values=(), **kw):
+class Dict(dict):
+    def __init__(self, names=(), values=(), **kw):
         super(Dict, self).__init__(**kw)
         for k, v in zip(names, values):
             self[k] = v
@@ -34,9 +33,9 @@ class Dict(dict): #DICT helper
 
 TIMEDELTA_ZERO = datetime.timedelta(0)
 
-_RE_TZ_ = re.compile('^(\+\-)([0-9]{1,2})\:([0-9]{1,2})$') #匹配时间 +/- 12 : 33
+_RE_TZ_ = re.compile('^([\+\-])([0-9]{1,2})\:([0-9]{1,2})$') #匹配时间 +/- 12 : 33
 
-class UTC(datatime.tzinfo):
+class UTC(datetime.tzinfo):
 	"""docstring for UTC"""
 	def __init__(self, utc):
 		utc = str(utc.strip().upper())
@@ -47,8 +46,8 @@ class UTC(datatime.tzinfo):
 			m = int(mt.group(3))
 			if minus:
 				h,m = (-h),(-m)
-			self._utcoffset = datatime.timedelta(hours=h,minutes = m)
-			self._tzname = 'UTC%S' % utc
+			self._utcoffset = datetime.timedelta(hours=h,minutes = m)
+			self._tzname = 'UTC%s' % utc
 		else:
 			raise ValueError('bad utc time zone')
 	def utcoffset(self,dt):
@@ -381,7 +380,7 @@ class Request(object):
 		r = self._get_raw_input()[key]
 		if isinstance(r,list):
 			return r[:]
-		else
+		else:
 			return [r]	
 
 	def input(self,**kw):
@@ -521,12 +520,12 @@ class Response(object):
 		L = ['%s=%s' % (_quote(name),_quote(value))]
 		if expires is not None:
 			if isinstance(expires,(float,int,long)):
-				 L.append('Expires=%s' % datetime.datetime.fromtimestamp(expires, UTC_0).strftime('%a, %d-%b-%Y %H:%M:%S GMT'))
+				L.append('Expires=%s' % datetime.datetime.fromtimestamp(expires, UTC_0).strftime('%a, %d-%b-%Y %H:%M:%S GMT'))
 			if isinstance(expires, (datetime.date, datetime.datetime)):
-                L.append('Expires=%s' % expires.astimezone(UTC_0).strftime('%a, %d-%b-%Y %H:%M:%S GMT'))
+				L.append('Expires=%s' % expires.astimezone(UTC_0).strftime('%a, %d-%b-%Y %H:%M:%S GMT'))
 			elif isinstance(max_age, (int, long)):
-            	L.append('Max-Age=%d' % max_age)	 
-            L.append('Path=%s' % path)
+				L.append('Max-Age=%d' % max_age)	 
+			L.append('Path=%s' % path)
 	        if domain:
 	            L.append('Domain=%s' % domain)
 	        if secure:
@@ -536,11 +535,11 @@ class Response(object):
 	        self._cookies[name] = '; '.join(L)	
 	def unset_cookie(self, name):
 	 	if hasattr(self, '_cookies'):
-            if name in self._cookies:
-                del self._cookies[name]
-    @property 
-    def status_code(self):
-    	return int(self._status[:3])
+	 		if name in self._cookies:
+	 			del self._cookies[name]
+	@property
+	def status_code(self):
+		return int(self._status[:3])
 
    	@property 
    	def status(self):
@@ -549,29 +548,29 @@ class Response(object):
    	@status.setter
    	def status(self,value):
    		if isinstance(value, (int, long)):
-            if value>=100 and value<=999:
-                st = _RESPONSE_STATUSES.get(value, '')
-                if st:
-                    self._status = '%d %s' % (value, st)
-                else:
-                    self._status = str(value)
-            else:
-                raise ValueError('Bad response code: %d' % value)
-        elif isinstance(value, basestring):
-            if isinstance(value, unicode):
-                value = value.encode('utf-8')
-            if _RE_RESPONSE_STATUS.match(value):
-                self._status = value
-            else:
-                raise ValueError('Bad response code: %s' % value)
-        else:
-            raise TypeError('Bad type of response code.')
+			if value>=100 and value<=999:
+				st = _RESPONSE_STATUSES.get(value, '')
+				if st:
+					self._status = '%d %s' % (value, st)
+				else:
+					self._status = str(value)
+			else:
+				raise ValueError('Bad response code: %d' % value)
+		elif isinstance(value, basestring):
+			if isinstance(value, unicode):
+				value = value.encode('utf-8')
+			if _RE_RESPONSE_STATUS.match(value):
+				self._status = value
+			else:
+				raise ValueError('Bad response code: %s' % value)
+		else:
+			raise TypeError('Bad type of response code.')
 
 class Template(object):
 	"""docstring for Template"""
-	def __init__(self, template_name):
+	def __init__(self, template_name,**kw):
 		self.Template_name = template_name
-        self.model=dict(**kw)
+        #self.model=dict(**kw)
 
 class TemplateEngine(object):
 	"""docstring for TemplateEngine"""
@@ -606,15 +605,15 @@ def _default_error_handler(e,start_response,is_debug):
 	
 def view(path):
 	def _decorator(func):
-        @functools.wraps(func)
-        def _wrapper(*args, **kw):
-            r = func(*args, **kw)
-            if isinstance(r, dict):
-                logging.info('return Template')
-                return Template(path, **r)
-            raise ValueError('Expect return a dict when using @view() decorator.')
-        return _wrapper
-    return _decorator		
+		@functools.wraps(func)
+		def _wrapper(*args, **kw):
+			r = func(*args, **kw)
+			if isinstance(r, dict):
+				logging.info('return Template')
+				return Template(path, **r)
+			raise ValueError('Expect return a dict when using @view() decorator.')
+		return _wrapper
+	return _decorator		
 
 _RE_INTERCEPTROR_STARTS_WITH = re.compile(r'^([^\*\?]+)\*?$') #
 _RE_INTERCEPTROR_ENDS_WITH = re.compile(r'^\*([^\*\?]+)$')
@@ -659,8 +658,8 @@ def _load_module(module_name):
 	m = __import__(from_module,globals(),locals(),[import_module])
 	return getattr(m,import_module)
 
-class WSGIApplication(self,document_root=None,**kw):
-	def __init__(self):
+class WSGIApplication(object):
+	def __init__(self,document_root=None,**kw):
 		self._running = False
 		self._document_root = document_root 
 		self._interceptors = []
@@ -710,89 +709,87 @@ class WSGIApplication(self,document_root=None,**kw):
 	def add_interceptor(self,func):
 		self._check_not_running()
 		self._interceptors.append(func)
-        logging.info('Add interceptor: %s' % str(func))		
+        #logging.info('Add interceptor: %s' % str(func))		
 
-     def run(self, port=9000, host='127.0.0.1'):
-        from wsgiref.simple_server import make_server
-        logging.info('application (%s) will start at %s:%s...' % (self._document_root, host, port))
-        server = make_server(host, port, self.get_wsgi_application(debug=True))
-        server.serve_forever()   
+	def run(self, port=9000, host='127.0.0.1'):
+		from wsgiref.simple_server import make_server
+		logging.info('application (%s) will start at %s:%s...' % (self._document_root, host, port))
+		server = make_server(host, port, self.get_wsgi_application(debug=True))
+		server.serve_forever()   
         
-    def get_wsgi_application(self,debug=False):
-    	self._check_not_running()
-    	if debug:
-    		self._get_dynamic.append(StaticFileRoute())
-    	self._running = True
-    	
-    	_application = Dict(document_root=self._document_root)
+	def get_wsgi_application(self,debug=False):
+		self._check_not_running()
+		if debug:
+			self._get_dynamic.append(StaticFileRoute())
+		self._running = True
+		_application = Dict(document_root=self._document_root)
 
-    	def fn_route():
-    		response_method = ctx.request.request_method
-    		path_info = ctx.request.path_info
-    		if request_method == 'GET':
-    			fn = self._get_static.get(path_info,None)
-    			if fn:
-    				return fn()
-    			for fn in self._get_dynamic:
-    				args = fn.match(path_info)
-    				if args :
-    					return fn(*args)
-    			raise notfound()		
-    		if request_method=='POST':
-                fn = self._post_static.get(path_info, None)
-                if fn:
-                    return fn()
-                for fn in self._post_dynamic:
-                    args = fn.match(path_info)
-                    if args:
-                        return fn(*args)
-                raise notfound()
-            raise badrequest()	 
-
+		def fn_route():
+			response_method = ctx.request.request_method
+			path_info = ctx.request.path_info
+			if request_method == 'GET':
+				fn = self._get_static.get(path_info,None)
+				if fn:
+					return fn()
+				for fn in self._get_dynamic:
+					args = fn.match(path_info)
+					if args :
+						return fn(*args)
+				raise notfound()		
+			if request_method=='POST':
+				fn = self._post_static.get(path_info, None)
+				if fn:
+					return fn()
+				for fn in self._post_dynamic:
+					args = fn.match(path_info)
+					if args:
+						return fn(*args)
+				raise notfound()
+			raise badrequest()	 
         fn_exec = _build_interceptor_chain(fn_route, *self._interceptors)       
 
-        def wsgi(env, start_response):
-            ctx.application = _application
-            ctx.request = Request(env)
-            response = ctx.response = Response()
-            try:
-                r = fn_exec()
-                if isinstance(r, Template):
-                    r = self._template_engine(r.template_name, r.model)
-                if isinstance(r, unicode):
-                    r = r.encode('utf-8')
-                if r is None:
-                    r = []
-                start_response(response.status, response.headers)
-                return r
-            except RedirectError, e:
-                response.set_header('Location', e.location)
-                start_response(e.status, response.headers)
-                return []
-            except HttpError, e:
-                start_response(e.status, response.headers)
-                return ['<html><body><h1>', e.status, '</h1></body></html>']
-            except Exception, e:
-                logging.exception(e)
-                if not debug:
-                    start_response('500 Internal Server Error', [])
-                    return ['<html><body><h1>500 Internal Server Error</h1></body></html>']
-                exc_type, exc_value, exc_traceback = sys.exc_info()
-                fp = StringIO()
-                traceback.print_exception(exc_type, exc_value, exc_traceback, file=fp)
-                stacks = fp.getvalue()
-                fp.close()
-                start_response('500 Internal Server Error', [])
-                return [
-                    r'''<html><body><h1>500 Internal Server Error</h1><div style="font-family:Monaco, Menlo, Consolas, 'Courier New', monospace;"><pre>''',
-                    stacks.replace('<', '&lt;').replace('>', '&gt;'),
-                    '</pre></div></body></html>']
-            finally:
-                del ctx.application
-                del ctx.request
-                del ctx.response
+	def wsgi(env, start_response):
+		ctx.application = _application
+		ctx.request = Request(env)
+		response = ctx.response = Response()
+		try:
+			r = fn_exec()
+			if isinstance(r, Template):
+				r = self._template_engine(r.template_name, r.model)
+			if isinstance(r, unicode):
+				r = r.encode('utf-8')
+			if r is None:
+				r = []
+			start_response(response.status, response.headers)
+			return r
+		except RedirectError, e:
+			response.set_header('Location', e.location)
+			start_response(e.status, response.headers)
+			return []
+		except HttpError, e:
+			start_response(e.status, response.headers)
+			return ['<html><body><h1>', e.status, '</h1></body></html>']
+		except Exception, e:
+			logging.exception(e)
+			if not debug:
+				start_response('500 Internal Server Error', [])
+				return ['<html><body><h1>500 Internal Server Error</h1></body></html>']
+			exc_type, exc_value, exc_traceback = sys.exc_info()
+			fp = StringIO()
+			traceback.print_exception(exc_type, exc_value, exc_traceback, file=fp)
+			stacks = fp.getvalue()
+			fp.close()
+			start_response('500 Internal Server Error', [])
+			return [
+				r'''<html><body><h1>500 Internal Server Error</h1><div style="font-family:Monaco, Menlo, Consolas, 'Courier New', monospace;"><pre>''',
+				stacks.replace('<', '&lt;').replace('>', '&gt;'),
+				'</pre></div></body></html>']
+		finally:
+			del ctx.application
+			del ctx.request
+			del ctx.response
 
-        return wsgi
+		return wsgi
 if __name__=='__main__':
     sys.path.append('.')
         
