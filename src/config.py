@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+'''
+Configuration
+'''
+
+__author__ = 'Michael Liao'
+
 import config_default
 
 class Dict(dict):
-	"""docstring for Dict"""
-	def __init__(self, arg):
-		super(Dict, self).__init__()
-		self.arg = arg
- 	def __init__(self, names=(), values=(), **kw):
+    '''
+    Simple dict but support access as x.y style.
+    '''
+    def __init__(self, names=(), values=(), **kw):
         super(Dict, self).__init__(**kw)
         for k, v in zip(names, values):
             self[k] = v
@@ -21,6 +26,7 @@ class Dict(dict):
 
     def __setattr__(self, key, value):
         self[key] = value
+
 def merge(defaults, override):
     r = {}
     for k, v in defaults.iteritems():
@@ -32,6 +38,7 @@ def merge(defaults, override):
         else:
             r[k] = v
     return r
+
 def toDict(d):
     D = Dict()
     for k, v in d.iteritems():
@@ -41,9 +48,9 @@ def toDict(d):
 configs = config_default.configs
 
 try:
-	import config_override
-	configs = merge(configs,config_override.configs)
+    import config_override
+    configs = merge(configs, config_override.configs)
 except ImportError:
-	pass
+    pass
 
-configs = toDict(configs)	     
+configs = toDict(configs)
