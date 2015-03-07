@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'/>
+		{% block meta %} <!-- block meta -->{% endblock %}
+		<title>{% block title %} ? {% endblock %} - Awesome Python Webapp</title>
+		<link rel="stylesheet" href="/static/css/uikit.min.css">
+		<link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
+		{% block beforehead %} <!-- before head -->{% endblock %}
+	</head>
+	<body>
+		<!-- 导航 -->
+		<ul>
+			<li><a href="/">日志</a></li>
+			<li><a href="/">其他1</a></li>
+			<li><a href="/">其他2</a></li>
+			<li><a href="/">其他3</a></li>
+		</ul>
+		{% if user %}
+				<p>用户名：{{user.name}}</p>
+		{% else %}
+				<p><a href="/login">登录</a><a href="/signup">注册</a></p>
+		{% endif %}
+		<!-- 文章列表 -->
+		{% block content %}
+		{% endblock %}
+	</body>
+</html>
