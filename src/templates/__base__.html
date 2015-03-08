@@ -2,27 +2,54 @@
 <html>
 	<head>
 		<meta charset='utf-8'/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		{% block meta %} <!-- block meta -->{% endblock %}
 		<title>{% block title %} ? {% endblock %} - Awesome Python Webapp</title>
-		<link rel="stylesheet" href="/static/css/uikit.min.css">
-		<link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
+		<link rel="stylesheet" href="static/flat-ui/dist/css/vendor/bootstrap.min.css">
+		<link rel="stylesheet" href="static/flat-ui/dist/css/flat-ui.min.css">
+		<style>
+			.nav{
+				width: 80%;
+			}
+			.header-img{
+				padding: 10px 0;
+			}
+			.navbar-nav .username{
+				float: right;
+			}
+		</style>
 		{% block beforehead %} <!-- before head -->{% endblock %}
 	</head>
 	<body>
-		<!-- 导航 -->
-		<ul>
-			<li><a href="/">日志</a></li>
-			<li><a href="/">其他1</a></li>
-			<li><a href="/">其他2</a></li>
-			<li><a href="/">其他3</a></li>
-		</ul>
-		{% if user %}
-				<p>用户名：{{user.name}}</p>
-		{% else %}
-				<p><a href="/login">登录</a><a href="/signup">注册</a></p>
-		{% endif %}
-		<!-- 文章列表 -->
-		{% block content %}
-		{% endblock %}
+		<div class='container'>
+			<div><img class='header-img'src="http://placehold.it/1140x100" alt="此处应有自拍"></div>
+			<nav class="navbar navbar-inverse" role="navigation">
+			<!-- Navbar content -->
+			 <div class="navbar-header">
+			    	<a class="navbar-brand" href="#">Flat UI</a>
+			  </div>
+			  <ul class="nav navbar-nav">
+		      <li class="active"><a href="/">日志</a></li>
+		      <li><a href="/">关于</a></li>
+		      {% if user%}
+		      	<li class='username'><a href="/u/{{user.name}}">{{ user.name }}</a></li>
+		      {% else %}
+				<li><a href="/login">登录</a></li>
+				<li><a href="/register">注册</a></li>
+		      {% endif %}
+		    </ul>
+			</nav>	
+
+			{% if user %}
+					<p>用户名：{{user.name}}</p>
+			{% else %}
+					<p><a href="/login">登录</a><a href="/register">注册</a></p>
+			{% endif %}
+			<!-- 文章列表 -->
+			{% block content %}
+			{% endblock %}
+			</div>
+			<!-- 导航 -->
+			
 	</body>
 </html>
