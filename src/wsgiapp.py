@@ -6,7 +6,7 @@
 A WSGI application entry.
 '''
 
-import logging; logging.basicConfig(level=logging.INFO)
+from transwarp import colorlog
 
 import os
 

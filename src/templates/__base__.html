@@ -14,7 +14,7 @@
 			.header-img{
 				padding: 10px 0;
 			}
-			.navbar-nav .username{
+			.navbar-nav .float-right{
 				float: right;
 			}
 		</style>
@@ -26,30 +26,25 @@
 			<nav class="navbar navbar-inverse" role="navigation">
 			<!-- Navbar content -->
 			 <div class="navbar-header">
-			    	<a class="navbar-brand" href="#">Flat UI</a>
+			    	<a class="navbar-brand" href="#">朱砂</a>
 			  </div>
 			  <ul class="nav navbar-nav">
 		      <li class="active"><a href="/">日志</a></li>
 		      <li><a href="/">关于</a></li>
-		      {% if user%}
-		      	<li class='username'><a href="/u/{{user.name}}">{{ user.name }}</a></li>
+		      {% if user %}
+		      	<li class='float-right'><a href="/u/{{user.name}}">{{ user.name }}</a></li>
 		      {% else %}
-				<li><a href="/login">登录</a></li>
-				<li><a href="/register">注册</a></li>
+				<li class='float-right'><a href="/login">登录</a></li>
+				<li class='float-right'><a href="/register">注册</a></li>
 		      {% endif %}
 		    </ul>
-			</nav>	
-
-			{% if user %}
-					<p>用户名：{{user.name}}</p>
-			{% else %}
-					<p><a href="/login">登录</a><a href="/register">注册</a></p>
-			{% endif %}
+			</nav>
 			<!-- 文章列表 -->
 			{% block content %}
 			{% endblock %}
 			</div>
 			<!-- 导航 -->
-			
+	<script src='/static/flat-ui/dist/js/vendor/jquery.min.js'></script>
+	<script src='/static/flat-ui/dist/js/flat-ui.js'></script>
 	</body>
 </html>

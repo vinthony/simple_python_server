@@ -2,12 +2,12 @@
 # -*- coding:utf-8 -*-
 
 import os,sys,time,subprocess
-
+import transwarp.colorlog
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 def log(s):
-	print '[Monitor] %s' % s
+	transwarp.colorlog.info(s,'monitor')
 
 class MyFileSystemEventHandler(FileSystemEventHandler):
 		"""docstring for MyFileSystemEventHandler"""
@@ -16,7 +16,6 @@ class MyFileSystemEventHandler(FileSystemEventHandler):
 			self.restart = fn
 		def on_any_event(self,event):
 			if event.src_path.endswith('.py'):
-				
 				log('Python source file changed:%s' % event.src_path)
 				self.restart()
 
@@ -56,7 +55,7 @@ def start_watch(path,callback):
 if __name__ == '__main__':
 	argv = sys.argv[1:]
 	if not argv:
-		print 'Usage:./pymonitor your-script.py'
+		colorlog.info('Usage:./pymonitor your-script.py') 
 	if argv[0] !='python':
 		argv.insert(0,'python')
 	command = argv

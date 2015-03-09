@@ -1,7 +1,7 @@
 #!/usr/local/env python
 # -*- coding:utf-8 -*-
 
-import re, json, logging, functools
+import re, json, functools
 from transwarp.web import ctx
 def dumps(obj):
 	return json.dumps(obj)

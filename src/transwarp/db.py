@@ -4,7 +4,7 @@
 
 __author__ = 'vinthony@gmail.com'
 
-import time,uuid,functools,threading,logging
+import time,uuid,functools,threading,colorlog
 
 # Dict object: 
 class Dict(dict):
@@ -32,9 +32,9 @@ def next_id(t=None):
 def _profiling(start,sql=''): 
 	t = time.time() - start
 	if t > 0.1:
-		logging.warning('[PROFILING] [DB] %s %s' % (t,sql))
+		colorlog.warning('[PROFILING] [DB] %s %s' % (t,sql))
 	else:
-		logging.info('[PROFILING] [DB] %s %s' % (t,sql))
+		colorlog.info('[PROFILING] [DB] %s %s' % (t,sql))
 # 处理错误
 class DBError(Exception):
 	pass
@@ -50,7 +50,7 @@ class _LazyConnection(object):
 	def cursor(self):
 		if self.connection is None : #如果没有 connection 才开一个enginer
 			connection = engine.connect()
-			logging.info('open connection <%s>....' % hex(id(connection)))
+			colorlog.info('open connection <%s>....' % hex(id(connection)))
 			self.connection = connection
 		return self.connection.cursor()		
 
@@ -64,7 +64,7 @@ class _LazyConnection(object):
 		if self.connection: #断开连接
 			connection = self.connection
 			self.connection = None
-			logging.info('close connection <%s>...'% hex(id(connection)))
+			colorlog.info('close connection <%s>...'% hex(id(connection)))
 
 # 数据库引擎
 class _Engine(object):
@@ -88,7 +88,7 @@ def create_engine(user,password,database,host='127.0.0.1',port=3306,**kw):
 	params.update(kw) #update([other]) 用kw覆盖params中存在的键值对
 	params['buffered'] = True
 	engine = _Engine(lambda: mysql.connector.connect(**params)) #将所有的参数传递给engine
-	logging.info('Init mysql engine <%s> ok' % hex(id(engine)))
+	colorlog.info('Init mysql engine <%s> ok' % hex(id(engine)))
 
 # 数据库上下文
 class _DbCtx(threading.local):
@@ -190,7 +190,7 @@ def _select(sql,first,*args):
 	global _db_ctx 
 	cursor = None
 	sql = sql.replace('?','%s')
-	logging.info('SQL:%s,ARGS:%s'%(sql,args))
+	colorlog.info('SQL:%s,ARGS:%s'%(sql,args))
 	try:
 		cursor = _db_ctx.connection.cursor()
 		cursor.execute(sql,args)
@@ -226,13 +226,13 @@ def _update(sql,*args): #update函数 包括update/delete
 	global _db_ctx
 	cursor = None
 	sql = sql.replace('?','%s')
-	logging.warning('SQL:%s,ARGS:%s' % (sql,args))
+	colorlog.warning('SQL:%s,ARGS:%s' % (sql,args))
 	try:
 		cursor = _db_ctx.connection.cursor()
 		cursor.execute(sql,args)
 		r = cursor.rowcount
 		if _db_ctx.transactions == 0 :
-			logging.info('auto commit');
+			colorlog.info('auto commit');
 			_db_ctx.connection.commit()
 		return r
 	finally:
@@ -248,7 +248,7 @@ def update(sql,*args):
 	return _update(sql,*args)
 
 if __name__ == '__main__': #
-	logging.basicConfig(level=logging.INFO)
+	#colorlog.basicConfig(level=colorlog.INFO)
 	u1 = dict(id=2000, name='Bob', email='bob@test.org', password='bobobob', last_modified=time.time())
 	create_engine('root','123456','test')
 	update('drop table if exists user')
