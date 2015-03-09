@@ -8,8 +8,6 @@ A simple, lightweight, WSGI-compatible web framework.
 __author__ = 'Michael Liao'
 
 import types, os, re, cgi, sys, time, datetime, functools, mimetypes, threading, colorlog, urllib, traceback
-import colorlog
-colorlog.logConfig(l=colorlog.INFO)
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -1426,7 +1424,7 @@ class WSGIApplication(object):
     def add_module(self, mod):
         self._check_not_running()
         m = mod if type(mod)==types.ModuleType else _load_module(mod)
-        colorlog.info('Add module: %s' % m.__name__)
+       # colorlog.info('Add module: %s' % m.__name__)
         for name in dir(m):
             fn = getattr(m, name)
             if callable(fn) and hasattr(fn, '__web_route__') and hasattr(fn, '__web_method__'):
@@ -1513,7 +1511,7 @@ class WSGIApplication(object):
                 start_response(e.status, response.headers)
                 return ['<html><body><h1>', e.status, '</h1></body></html>']
             except Exception, e:
-                colorlog.exception(e)
+                colorlog.info(e)
                 if not debug:
                     start_response('500 Internal Server Error', [])
                     return ['<html><body><h1>500 Internal Server Error</h1></body></html>']

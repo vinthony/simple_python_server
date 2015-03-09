@@ -33,6 +33,7 @@
 		      <li><a href="/">关于</a></li>
 		      {% if user %}
 		      	<li class='float-right'><a href="/u/{{user.name}}">{{ user.name }}</a></li>
+				<li class='float-right'><a href="/signout">登出</a></li>
 		      {% else %}
 				<li class='float-right'><a href="/login">登录</a></li>
 				<li class='float-right'><a href="/register">注册</a></li>
