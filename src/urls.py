@@ -78,12 +78,10 @@ def parse_signed_cookie(cookie_str):
         if user is None:
             return None
         colorlog.info(user)
-        print hashlib.md5('%s-%s-%s-%s' % (id,user.password,expires,_COOKIE_KEY)).hexdigest()
         if md5 != hashlib.md5('%s-%s-%s-%s' % (id,user.password,expires,_COOKIE_KEY)).hexdigest():
            return None
         return user                    
     except Exception,e:
-        print e
         return None
 
 def check_admin():

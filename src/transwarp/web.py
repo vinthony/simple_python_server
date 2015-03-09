@@ -502,7 +502,7 @@ def _build_regex(path):
     re_list = ['^']
     var_list = []
     is_var = False
-    for v in _re_route.split(path):
+    for v in _re_route.split(path):#?
         if is_var:
             var_name = v[1:]
             var_list.append(var_name)
