@@ -4,7 +4,7 @@
 import os, re, time, base64, hashlib
 from transwarp import colorlog
 
-from transwarp.web import get,view,post,ctx,interceptor,seeother,notfound
+from transwarp.web import get,view,post,ctx,interceptor,seeother,notfound,found
 from apis import api, APIError, APIValueError, APIPermissionError, APIResourceNotFoundError
 from config import configs
 
@@ -91,7 +91,6 @@ def user_interceptor(next):
         if user:
             colorlog.info('bind user <%s> to session...')
     ctx.request.user = user             
-    print ctx
     return next()
 
 @interceptor('/manage/')

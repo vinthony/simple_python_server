@@ -288,7 +288,7 @@ class RedirectError(HttpError):
         self.location = location
 
     def __str__(self):
-        return '%s, %s' % (self.status, self.location)
+        return '[ %s ], %s' % (self.status, self.location)
 
     __repr__ = __str__
 
@@ -549,8 +549,8 @@ class Route(object):
 
     def __str__(self):
         if self.is_static:
-            return 'Route(static,%s,path=%s)' % (self.method, self.path)
-        return 'Route(dynamic,%s,path=%s)' % (self.method, self.path)
+            return '[ static ][ %s ] %s' % (self.method, self.path)
+        return '[ dynamic ][ %s ] %s' % (self.method, self.path)
 
     __repr__ = __str__
 
@@ -1445,7 +1445,7 @@ class WSGIApplication(object):
                 self._get_dynamic.append(route)
             if route.method=='POST':
                 self._post_dynamic.append(route)
-        colorlog.info('Add route: %s' % str(route))
+        colorlog.info('[200]%s' % str(route))
 
     def add_interceptor(self, func):
         self._check_not_running()
