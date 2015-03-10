@@ -15,7 +15,6 @@ _COOKIE_KEY = configs.session.secret
 
 @interceptor('/')
 def user_interceptor(next):
-    print 'xxxxxxxxxx'
     colorlog.info('try to bind user from session cookie.')
     user = None 
     cookie = ctx.request.cookies.get(_COOKIE_NAME)
