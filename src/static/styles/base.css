@@ -1,0 +1,66 @@
+.login-wrapper{
+	background:rgba(255,255,255,0.7);
+	width: 320px;
+	height: 400px;
+	padding: 50px;
+	border:1px solid #fff;
+	border-radius: 5px;
+	margin: auto;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+}
+.login-wrapper input{
+	padding: 5px;
+	border-radius: 4px;
+	border:1px solid #ddd;
+}
+.line-wrapper{
+	width: 100%;
+	float: left;
+	margin:10px 0px;
+}
+.line-wrapper span{
+	padding: 10px;
+}
+.form-h3{
+	text-align: center;
+	padding: 10px 0;
+}
+.center{
+	text-align: center;
+}
+.flex-container{
+	display: flex;
+	flex-direction:row;
+}
+.flex-container .item{
+	text-align: center;
+	flex:auto;
+}
+.todo-list{
+	margin-top: 200px;
+	display: flex;
+	flex-direction:row;
+}
+.todo-list div{
+	flex:auto;
+}
+.todo-list a{
+	text-decoration: none;
+	margin: 0 auto;
+	font-weight: 600;
+	color: #fff;
+	display: block;
+	width: 125px;
+	height: 125px;
+	border-radius: 125px;
+	border:1px solid #eee;
+	text-align: center;
+	line-height: 125px;
+}
+.todo-list a:hover{
+
+}

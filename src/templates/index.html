@@ -6,5 +6,53 @@
 {% endblock %}
 
 {% block content %}
-	主页
+	<div class='login-wrapper'>
+		<form method='post' action="/login">
+			<h3 class='form-h3'>学生奖惩系统</h3>
+			<div class='line-wrapper'>
+				<label>姓名：</label><input type="text" name='name' placeholder='输入姓名'>			
+			</div>
+			<div class='line-wrapper'>
+				<label>密码：</label><input type="password" name='password' placeholder='密码'>			
+			</div>
+			<div class='line-wrapper flex-container'>
+				<div class='item'><input type="radio" name='identifity' value='1'><span>管理员</span></div>
+				<div class='item'><input type="radio" name='identifity' value='0'><span>学生</span></div>
+			</div>
+			<div class='line-wrapper center'>
+				<button type='submit' class='btn btn-success'>登陆</button>			
+			</div>
+			<div class="line-wrapper">
+				<a href="/forgetpassword">忘记密码?</a>			
+			</div>
+			<div class="line-wrapper">
+				{% if error %}
+				{{error}}	
+				{% endif %}	
+			</div>
+		</form>
+	</div>
 {% endblock %}
+{% block login_content%}
+	<div class='container'>
+		<div class='todo-list'>
+			<div><a href='/search' style='color:#1ABC9C;border-color:#1ABC9C'>查询学生</a></div>
+			<div><a href='/awardlist'style='color:#3498DB;border-color:#3498DB'>获奖列表</a></div>
+			<div><a href='/addstudent'style='color:#E67E22;border-color:#E67E22'>添加学生</a></div>
+			<div><a href='/addaward'style='color:#C0392B;border-color:#C0392B'>添加获奖情况</a></div>
+		</div>
+	</div>
+{% endblock %}
+{% block script %}
+	<script>
+		var color = null;
+		var target = null;
+		$('.todo-list a').hover(function(e){
+			target = e.currentTarget;
+			color  = $(target).css('color');
+			$(target).css({'background':color,color:'#fff'})
+		},function(e){
+			$(target).css({'color':color,'background':'rgba(0,0,0,0)'})
+		})
+	</script>
+{% endblock%}

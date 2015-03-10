@@ -1308,6 +1308,7 @@ def interceptor(pattern='/'):
     return _decorator
 
 def _build_interceptor_fn(func, next):
+    @functools.wraps(func)
     def _wrapper():
         if func.__interceptor__(ctx.request.path_info):
             return func(next)
@@ -1534,5 +1535,5 @@ class WSGIApplication(object):
 
 if __name__=='__main__':
     sys.path.append('.')
-    #import doctest
-   	#doctest.testmod()
+    import doctest
+    doctest.testmod()

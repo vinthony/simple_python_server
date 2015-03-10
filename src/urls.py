@@ -13,10 +13,26 @@ from models import User,Blog,Comment
 _COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
 
+@interceptor('/')
+def user_interceptor(next):
+    print 'xxxxxxxxxx'
+    colorlog.info('try to bind user from session cookie.')
+    user = None 
+    cookie = ctx.request.cookies.get(_COOKIE_NAME)
+    if cookie:
+        colorlog.info('parse session cookie ...')
+        user = parse_signed_cookie(cookie)
+        if user:
+            colorlog.info('bind user <%s> to session...')
+    ctx.request.user = user             
+    return next()
+
 @view('index.html')
 @get('/')
 def index():
     try:
+        if ctx.request.get('error'):
+            return dict();
         user = parse_signed_cookie(ctx.request.cookies[_COOKIE_NAME])
     except KeyError, e:
         user = None
@@ -90,18 +106,6 @@ def check_admin():
         return 
     raise APIPermissionError('No permission.')
 
-@interceptor('/')
-def user_interceptor(next):
-    colorlog.info('try to bind user from session cookie.')
-    user = None 
-    cookie = ctx.request.cookies.get(_COOKIE_NAME)
-    if cookie:
-        colorlog.info('parse session cookie ...')
-        user = parse_signed_cookie(cookie)
-        if user:
-            colorlog.info('bind user <%s> to session...')
-    ctx.request.user = user             
-    return next()
 
 @interceptor('/manage/')
 def manage_incerceptor(next):
@@ -116,19 +120,37 @@ def signout():
     raise seeother('/')
 
 #@api
-@post('/api/authenticate')
+@post('/login')
 def authenticate():
-    i = ctx.request.input(remember='')
+    i = ctx.request.input()
     name = i.name.strip().lower()
     password = i.password
-    remember = i.remember
+    admin = i.identifity
     user = User.find_first('where name=?',name)
     if user is None:
-        raise APIError('auth:failed','name','Invalid name.')
+        error='Invalid name.'
     elif user.password != password:
-        raise APIError('auth:failed','password','Invalid password.')
-    max_age = 604800 if remember == 'true' else None
+        error='Invalid password.'
+    elif user.identifity != admin:
+        error='Invalid identifity'
+    max_age = 604800
     cookie = make_signed_cookie(user.id,user.password,max_age)
     ctx.response.set_cookie(_COOKIE_NAME, cookie, max_age=max_age)
     user.password = '******'
-    raise seeother('/')
+    if error:
+        raise seeother('/?error=%s'% error )
+    else:
+        raise seeother('/')
+
+
+@api
+@get('/api/authenticate')
+def getloginName():
+    try:
+        user = parse_signed_cookie(ctx.request.cookies[_COOKIE_NAME]) 
+    except KeyError, e:
+        user = None
+    if user:
+        return dict(user=user)    
+    else:
+        return dict(message='not login name')

@@ -6,46 +6,56 @@
 		{% block meta %} <!-- block meta -->{% endblock %}
 		<title>{% block title %} ? {% endblock %} - Awesome Python Webapp</title>
 		<link rel="stylesheet" href="static/flat-ui/dist/css/vendor/bootstrap.min.css">
-		<link rel="stylesheet" href="static/flat-ui/dist/css/flat-ui.min.css">
+		<link rel="stylesheet" href="static/styles/base.css">
 		<style>
 			.nav{
-				width: 80%;
-			}
-			.header-img{
-				padding: 10px 0;
+				float: right;
 			}
 			.navbar-nav .float-right{
 				float: right;
 			}
+			body{
+				background-image: url(https://unsplash.it/1600/900/?blur);
+				background-attachment: fixed;
+			}
+			.navbar a{
+				color: white;
+			}
+			.navbar a:hover{
+				color: black;
+			}
 		</style>
 		{% block beforehead %} <!-- before head -->{% endblock %}
 	</head>
-	<body>
-		<div class='container'>
-			<div><img class='header-img'src="http://placehold.it/1140x100" alt="此处应有自拍"></div>
-			<nav class="navbar navbar-inverse" role="navigation">
+	<body >
+			<nav class="navbar" role="navigation" style='border-bottom:1px solid #fff;background-color:rgba(255,255,255,0.3)'>
 			<!-- Navbar content -->
-			 <div class="navbar-header">
-			    	<a class="navbar-brand" href="#">朱砂</a>
-			  </div>
-			  <ul class="nav navbar-nav">
-		      <li class="active"><a href="/">日志</a></li>
-		      <li><a href="/">关于</a></li>
-		      {% if user %}
-		      	<li class='float-right'><a href="/u/{{user.name}}">{{ user.name }}</a></li>
-				<li class='float-right'><a href="/signout">登出</a></li>
-		      {% else %}
-				<li class='float-right'><a href="/login">登录</a></li>
-				<li class='float-right'><a href="/register">注册</a></li>
-		      {% endif %}
-		    </ul>
-			</nav>
-			<!-- 文章列表 -->
-			{% block content %}
-			{% endblock %}
+			<div class="container">
+					 <div class="navbar-header">
+					    	<a class="navbar-brand" href="#" style='color:#fff'>学生奖惩系统</a>
+					  </div>
+					  <ul class="nav navbar-nav">
+				      {% if user %}
+						<li class='float-right'><a href="/signout">登出</a></li>
+				      	<li class='float-right'><a href="/u/{{user.name}}">{{ user.name }}</a></li>
+				      {% else %}
+				      {% endif %}
+				    </ul>
 			</div>
-			<!-- 导航 -->
+			</nav>	
+			<div class='container'>
+			<!-- 内容 -->
+			{% if user %}
+				{% block login_content %}
+				{% endblock %}
+			{% else %}
+				{% block content %}
+				{% endblock %}	
+			{% endif %}
+				
+			</div>
 	<script src='/static/flat-ui/dist/js/vendor/jquery.min.js'></script>
-	<script src='/static/flat-ui/dist/js/flat-ui.js'></script>
+	{% block script %}
+	{% endblock%}
 	</body>
 </html>
