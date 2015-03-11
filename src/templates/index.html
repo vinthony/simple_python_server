@@ -7,7 +7,7 @@
 
 {% block content %}
 	<div class='login-wrapper'>
-		<form method='post' action="/login">
+		<form method='post' action="/login" class='login-form'>
 			<h3 class='form-h3'>学生奖惩系统</h3>
 			<div class='line-wrapper'>
 				<label>姓名：</label><input type="text" name='name' placeholder='输入姓名'>			
@@ -16,19 +16,17 @@
 				<label>密码：</label><input type="password" name='password' placeholder='密码'>			
 			</div>
 			<div class='line-wrapper flex-container'>
-				<div class='item'><input type="radio" name='identifity' value='1'><span>管理员</span></div>
-				<div class='item'><input type="radio" name='identifity' value='0'><span>学生</span></div>
+				<div class='item'><input type="radio" name='identify' value='0' ><span>学生</span></div>
+				<div class='item'><input type="radio" name='identify' value='1' ><span>管理员</span></div>
 			</div>
 			<div class='line-wrapper center'>
-				<button type='submit' class='btn btn-success'>登陆</button>			
+				<button class='btn btn-success submit-form'>登陆</button>			
 			</div>
 			<div class="line-wrapper">
 				<a href="/forgetpassword">忘记密码?</a>			
 			</div>
-			<div class="line-wrapper">
-				{% if error %}
-				{{error}}	
-				{% endif %}	
+			<div class="line-wrapper error-item">
+				<!-- error shower -->
 			</div>
 		</form>
 	</div>
@@ -55,4 +53,5 @@
 			$(target).css({'color':color,'background':'rgba(0,0,0,0)'})
 		})
 	</script>
+	<script src='/static/styles/checklogin.js'></script>
 {% endblock%}

@@ -36,11 +36,6 @@ def index():
     except KeyError, e:
         user = None
     return dict(user=user)    
-    if ctx.request.cookies[_COOKIE_NAME] != None:
-        user = parse_signed_cookie()
-        if user:
-            return dict(user=user)
-    return dict()
 
 _RE_MD5 = re.compile(r'^[0-9a-f]{32}$')
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
@@ -124,24 +119,42 @@ def authenticate():
     i = ctx.request.input()
     name = i.name.strip().lower()
     password = i.password
-    admin = i.identifity
+    admin = i.identify
     user = User.find_first('where name=?',name)
+    error = None
     if user is None:
         error='Invalid name.'
     elif user.password != password:
         error='Invalid password.'
-    elif user.identifity != admin:
-        error='Invalid identifity'
+    elif str(user.identify) != admin:
+        error='Invalid identify'
     max_age = 604800
     cookie = make_signed_cookie(user.id,user.password,max_age)
     ctx.response.set_cookie(_COOKIE_NAME, cookie, max_age=max_age)
     user.password = '******'
     if error:
-        raise seeother('/?error=%s'% error )
-    else:
+        colorlog.info(error)
+    else:    
         raise seeother('/')
-
-
+@api
+@post('/api/checkuser')
+def checkuser():
+    i = ctx.request.input()
+    name = i.name.strip().lower()
+    password = i.password
+    admin = i['identify']
+    user = User.find_first('where name=?',name)
+    error = None
+    if user is None:
+        error='Invalid name.'
+    elif user.password != password:
+        error='Invalid password.'
+    elif str(user.identify) != admin:
+        error='Invalid identify'
+    if error:
+        return dict(code='500',message=error)
+    else:
+        return dict(code='0',message='ok') 
 @api
 @get('/api/authenticate')
 def getloginName():
