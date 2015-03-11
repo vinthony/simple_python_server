@@ -166,3 +166,37 @@ def getloginName():
         return dict(user=user)    
     else:
         return dict(message='not login name')
+
+@view('search.html')
+@get('/search')
+def search():
+    # 查询学生
+    return dict()
+
+@view('awardlist.html')
+@get('/awardlist')
+def awardlist():
+    # 获奖情况列表
+    return dict()
+
+@view('addstudent.html')
+@get('/addstudent')
+def addstudent():
+    return dict()
+
+@view('addaward.html')
+@get('/addaward')
+def addaward():
+    return dict()    
+
+@view('myaward.html')
+@get('/myaward')
+def myaward():
+    return dict()
+
+@view('myinfomation.html')
+@get('/myinfomation')
+def myinfomation():
+    return dict()    
+
+

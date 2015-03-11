@@ -1,9 +1,9 @@
 .login-wrapper{
-	background:rgba(255,255,255,0.7);
+	border:1px solid #F1C40F;
+	color: #F1C40F;
 	width: 320px;
 	height: 400px;
 	padding: 50px;
-	border:1px solid #fff;
 	border-radius: 5px;
 	margin: auto;
 	position: absolute;
@@ -12,10 +12,20 @@
 	right: 0;
 	left: 0;
 }
+.login-wrapper a{
+	color: #F1C40F;
+}
 .login-wrapper input{
 	padding: 5px;
+	background: rgba(0,0,0,0);
 	border-radius: 4px;
-	border:1px solid #ddd;
+	border:1px solid #F1C40F;
+}
+.login-wrapper .submit-form{
+	width: 100px;
+	color: #F1C40F;
+	border: 1px solid #F1C40F;
+	background: rgba(0,0,0,0);
 }
 .line-wrapper{
 	width: 100%;

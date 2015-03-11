@@ -4,7 +4,7 @@
 		<meta charset='utf-8'/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		{% block meta %} <!-- block meta -->{% endblock %}
-		<title>{% block title %} ? {% endblock %} - Awesome Python Webapp</title>
+		<title>{% block title %} ? {% endblock %} - 学生奖罚管理系统</title>
 		<link rel="stylesheet" href="static/flat-ui/dist/css/vendor/bootstrap.min.css">
 		<link rel="stylesheet" href="static/styles/base.css">
 		<style>
@@ -46,8 +46,13 @@
 			<div class='container'>
 			<!-- 内容 -->
 			{% if user %}
-				{% block login_content %}
-				{% endblock %}
+				{% if user.identify %}
+					{% block login_content %}
+					{% endblock %}
+				{% else %}
+					{% block login_student_content %}
+					{% endblock %}	
+				{% endif %}	
 			{% else %}
 				{% block content %}
 				{% endblock %}	

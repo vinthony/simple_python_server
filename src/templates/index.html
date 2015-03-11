@@ -20,7 +20,7 @@
 				<div class='item'><input type="radio" name='identify' value='1' ><span>管理员</span></div>
 			</div>
 			<div class='line-wrapper center'>
-				<button class='btn btn-success submit-form'>登陆</button>			
+				<button class='btn btn-success submit-form toggle-bg'>登陆</button>			
 			</div>
 			<div class="line-wrapper">
 				<a href="/forgetpassword">忘记密码?</a>			
@@ -31,13 +31,22 @@
 		</form>
 	</div>
 {% endblock %}
-{% block login_content%}
+{% block login_content %}
 	<div class='container'>
 		<div class='todo-list'>
-			<div><a href='/search' style='color:#1ABC9C;border-color:#1ABC9C'>查询学生</a></div>
-			<div><a href='/awardlist'style='color:#3498DB;border-color:#3498DB'>获奖列表</a></div>
-			<div><a href='/addstudent'style='color:#E67E22;border-color:#E67E22'>添加学生</a></div>
-			<div><a href='/addaward'style='color:#C0392B;border-color:#C0392B'>添加获奖情况</a></div>
+			<div><a class='toggle-bg' href='/search' style='color:#1ABC9C;border-color:#1ABC9C'>查询学生</a></div>
+			<div><a class='toggle-bg' href='/awardlist'style='color:#3498DB;border-color:#3498DB'>获奖列表</a></div>
+			<div><a class='toggle-bg' href='/addstudent'style='color:#E67E22;border-color:#E67E22'>添加学生</a></div>
+			<div><a class='toggle-bg' href='/addaward'style='color:#C0392B;border-color:#C0392B'>添加获奖情况</a></div>
+		</div>
+	</div>
+{% endblock %}
+{% block login_student_content %}
+	<div class='container'>
+		<div class='todo-list'>
+			<div><a class='toggle-bg' href='/myaward' style='color:#1ABC9C;border-color:#1ABC9C'>我的获奖</a></div>
+			<div><a class='toggle-bg' href='/awardlist'style='color:#3498DB;border-color:#3498DB'>获奖列表</a></div>
+			<div><a class='toggle-bg' href='/myinfomation'style='color:#E67E22;border-color:#E67E22'>我的信息</a></div>
 		</div>
 	</div>
 {% endblock %}
@@ -45,7 +54,7 @@
 	<script>
 		var color = null;
 		var target = null;
-		$('.todo-list a').hover(function(e){
+		$('.toggle-bg').hover(function(e){
 			target = e.currentTarget;
 			color  = $(target).css('color');
 			$(target).css({'background':color,color:'#fff'})
