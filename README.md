@@ -19,6 +19,7 @@ a simple blog server base on python
 ## 学籍管理系统
 
 功能： 
+
 1. 学生【登陆】
 2. 学生基本信息 【改】
 3. 管理员【登陆】
@@ -27,6 +28,7 @@ a simple blog server base on python
 
 ## USER表:
 
+|类别| 信息|
 |----------------|------------|
 |      id(int)        |   primary key |
 |      name       |   varchar(50)    |
@@ -39,6 +41,7 @@ a simple blog server base on python
 
 ## award表：
 
+|类别| 信息|
 |----------------|------------|
 |    id    |  primary key          |
 |   award_name| varchar(50)   |
