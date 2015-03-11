@@ -13,18 +13,6 @@ from models import User,Blog,Comment
 _COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
 
-@interceptor('/')
-def user_interceptor(next):
-    colorlog.info('try to bind user from session cookie.')
-    user = None 
-    cookie = ctx.request.cookies.get(_COOKIE_NAME)
-    if cookie:
-        colorlog.info('parse session cookie ...')
-        user = parse_signed_cookie(cookie)
-        if user:
-            colorlog.info('bind user <%s> to session...')
-    ctx.request.user = user             
-    return next()
 
 @view('index.html')
 @get('/')
@@ -40,6 +28,18 @@ def index():
 _RE_MD5 = re.compile(r'^[0-9a-f]{32}$')
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
 
+@interceptor('/')
+def user_interceptor(next):
+    colorlog.info('try to bind user from session cookie.')
+    user = None 
+    cookie = ctx.request.cookies[_COOKIE_NAME]
+    if cookie:
+        colorlog.info('parse session cookie ...')
+        user = parse_signed_cookie(cookie)
+        if user:
+            colorlog.info('bind user <%s> to session...')
+    ctx.request.user = user             
+    return next()
 #@api
 @post('/api/users')
 def register_user():
@@ -87,7 +87,6 @@ def parse_signed_cookie(cookie_str):
         user = User.get(id)
         if user is None:
             return None
-        colorlog.info(user)
         if md5 != hashlib.md5('%s-%s-%s-%s' % (id,user.password,expires,_COOKIE_KEY)).hexdigest():
            return None
         return user                    
