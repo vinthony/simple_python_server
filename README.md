@@ -36,6 +36,8 @@ a simple blog server base on python
 |      password     |   varchar(50)  |
 |      email        |   varchar(50)  |
 |      admin        |   1/0 (boolean) |
+|      grade        |    int(1)      |
+|      college      |    int(2)      |
 |     created_at    |   varchar(50) |
 
 
@@ -50,5 +52,13 @@ a simple blog server base on python
 | award_is_show|       boolean|
 |created_at |  varchar(50)  |
 
+## 学院表：
 
+|类别| 信息|
+|----------------|------------|
+|    id    |  primary key          |
+|  college_name| varchar(50)   |
+|   college_id|   int        |
+|   award_user_id|    int     |
+|created_at |  varchar(50)  |
 

@@ -7,23 +7,20 @@ from transwarp import colorlog
 from transwarp.web import get,view,post,ctx,interceptor,seeother,notfound,found
 from apis import api, APIError, APIValueError, APIPermissionError, APIResourceNotFoundError
 from config import configs
-
+import md5
 from models import User,Blog,Comment
 
 _COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
-
+def returndict(**kw):
+    x = dict(user=ctx.request.user)
+    x.update(dict(**kw))
+    return x
 
 @view('index.html')
 @get('/')
 def index():
-    try:
-        if ctx.request.get('error'):
-            return dict();
-        user = parse_signed_cookie(ctx.request.cookies[_COOKIE_NAME])
-    except KeyError, e:
-        user = None
-    return dict(user=user)    
+    return returndict() 
 
 _RE_MD5 = re.compile(r'^[0-9a-f]{32}$')
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
@@ -32,13 +29,14 @@ _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$'
 def user_interceptor(next):
     colorlog.info('try to bind user from session cookie.')
     user = None 
-    cookie = ctx.request.cookies[_COOKIE_NAME]
-    if cookie:
-        colorlog.info('parse session cookie ...')
+    try:
+        cookie = ctx.request.cookies[_COOKIE_NAME]
         user = parse_signed_cookie(cookie)
         if user:
-            colorlog.info('bind user <%s> to session...')
-    ctx.request.user = user             
+            colorlog.info('bind user <%s> to session...'% user.name)
+        ctx.request.user = user             
+    except Exception,e:
+        print e;           
     return next()
 #@api
 @post('/api/users')
@@ -46,7 +44,7 @@ def register_user():
     i = ctx.request.input(name='',email='',password='')
     name = i.name.strip()
     email = i.email.strip().lower()
-    password = i.password
+    password = hashlib.md5(i.password).hexdigest() 
     if not name :
     	raise APIValueError('name')
     if not email or not _RE_EMAIL.match(email):
@@ -99,14 +97,6 @@ def check_admin():
         return 
     raise APIPermissionError('No permission.')
 
-
-@interceptor('/manage/')
-def manage_incerceptor(next):
-    user = ctx.request.user
-    if user and user.admin:
-        return next()
-    raise seeother('/signin')
-
 @get('/signout')
 def signout():
     ctx.response.delete_cookie(_COOKIE_NAME)
@@ -117,7 +107,7 @@ def signout():
 def authenticate():
     i = ctx.request.input()
     name = i.name.strip().lower()
-    password = i.password
+    password = hashlib.md5(i.password).hexdigest()
     admin = i.identify
     user = User.find_first('where name=?',name)
     error = None
@@ -130,7 +120,6 @@ def authenticate():
     max_age = 604800
     cookie = make_signed_cookie(user.id,user.password,max_age)
     ctx.response.set_cookie(_COOKIE_NAME, cookie, max_age=max_age)
-    user.password = '******'
     if error:
         colorlog.info(error)
     else:    
@@ -170,32 +159,32 @@ def getloginName():
 @get('/search')
 def search():
     # 查询学生
-    return dict()
+    return returndict()
 
 @view('awardlist.html')
 @get('/awardlist')
 def awardlist():
     # 获奖情况列表
-    return dict()
+    return returndict()
 
 @view('addstudent.html')
 @get('/addstudent')
 def addstudent():
-    return dict()
+    return returndict()
 
 @view('addaward.html')
 @get('/addaward')
 def addaward():
-    return dict()    
+    return returndict()    
 
 @view('myaward.html')
 @get('/myaward')
 def myaward():
-    return dict()
+    return returndict()
 
 @view('myinfomation.html')
 @get('/myinfomation')
 def myinfomation():
-    return dict()    
+    return returndict()    
 
 

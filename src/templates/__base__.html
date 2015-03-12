@@ -11,12 +11,15 @@
 			.nav{
 				float: right;
 			}
-			.navbar-nav .float-right{
+			/*.navbar-nav .float-right{
 				float: right;
-			}
+			}*/
 			body{
-				background-image: url(https://unsplash.it/1600/900/?blur);
+				background-color: #333;
+				/*background-image: url(https://unsplash.it/1600/900/?image=496);*/
 				background-attachment: fixed;
+			}
+			.navbar{
 			}
 			.navbar a{
 				color: white;
@@ -28,16 +31,16 @@
 		{% block beforehead %} <!-- before head -->{% endblock %}
 	</head>
 	<body >
-			<nav class="navbar" role="navigation" style='border-bottom:1px solid #fff;background-color:rgba(255,255,255,0.3)'>
+			<nav class="navbar navbar-inverse" role="navigation" >
 			<!-- Navbar content -->
 			<div class="container">
 					 <div class="navbar-header">
-					    	<a class="navbar-brand" href="#" style='color:#fff'>学生奖惩系统</a>
+					    	<a class="navbar-brand" href="/">学生奖惩系统</a>
 					  </div>
-					  <ul class="nav navbar-nav">
+					  <ul class="nav  navbar-nav" >
 				      {% if user %}
-						<li class='float-right'><a href="/signout">登出</a></li>
 				      	<li class='float-right'><a href="/u/{{user.name}}">{{ user.name }}</a></li>
+						<li class='float-right'><a href="/signout">登出</a></li>
 				      {% else %}
 				      {% endif %}
 				    </ul>
