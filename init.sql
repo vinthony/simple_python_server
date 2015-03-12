@@ -13,7 +13,7 @@ create table users (
     `password` varchar(50) not null,
     `identify` bool not null,
     `name` varchar(50) not null,
-    `image` varchar(500) not null,
+    `college` varchar(5) not null,
     `created_at` real not null,
     unique key `idx_email` (`email`),
     key `idx_created_at` (`created_at`),
@@ -40,4 +40,4 @@ create table college (
     primary key (`id`)
 ) engine=innodb default charset=utf8;
 
-insert into users (`id`, `email`, `password`, `admin`, `name`, `created_at`) values ('0010018336417540987fff4508f43fbaed718e263442526000', 'admin@example.com', 'e10adc3949ba59abbe56e057f20f883e', 1, 'Administrator', 1402909113.628);
+insert into users (`id`, `email`, `password`, `identify`, `name`, `created_at`) values ('0010018336417540987fff4508f43fbaed718e263442526000', 'admin@example.com', 'e10adc3949ba59abbe56e057f20f883e', 1, 'Administrator', 1402909113.628);
