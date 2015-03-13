@@ -4,16 +4,21 @@
 import os, re, time, base64, hashlib
 from transwarp import colorlog
 
-from transwarp.web import get,view,post,ctx,interceptor,seeother,notfound,found
+from transwarp.web import get,view,post,ctx,interceptor,seeother,notfound,found,Dict
 from apis import api, APIError, APIValueError, APIPermissionError, APIResourceNotFoundError
 from config import configs
 import md5
-from models import User,Blog,Comment
+from models import User,Award,College
 
 _COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
 def returndict(**kw):
-    x = dict(user=ctx.request.user)
+    user = None
+    try:
+        user = ctx.request.user
+    except Exception, e:
+        user = None
+    x = dict(user=user)
     x.update(dict(**kw))
     return x
 
@@ -129,10 +134,12 @@ def authenticate():
 def checkuser():
     i = ctx.request.input()
     name = i.name.strip().lower()
-    password = i.password
+    password = hashlib.md5(i.password).hexdigest()
     admin = i['identify']
     user = User.find_first('where name=?',name)
     error = None
+    colorlog.info(user)
+    colorlog.info(admin)
     if user is None:
         error='Invalid name.'
     elif user.password != password:
@@ -159,7 +166,37 @@ def getloginName():
 @get('/search')
 def search():
     # 查询学生
-    return returndict()
+    page = ctx.request.get('p');
+    if page:
+        
+    student =User.find_all()
+    colleges=College.find_all()
+    return returndict(college=colleges,students=student)
+
+@api
+@get('/api/search_student')
+def search_student():
+    i = ctx.request
+    name = i.get('name').strip().lower()    
+    sno = i.get('sno')
+    grade = i.get('grade')
+    college = i.get('college') 
+    temp = Dict();
+    if name:
+        temp['name'] = name
+    if sno:
+        temp['sno'] = sno
+    if grade:
+        temp['grade'] = grade
+    if college:
+        temp['college'] = college
+    temp_str = ' and '.join([ k+'="'+v+'"' for k,v in temp.iteritems()])
+    colorlog.info(temp_str,identify='SQL');
+    data = User.find_by('where '+temp_str)        
+    if not name and not sno and not grade and not college:
+        return dict(code=500,message='没有筛选条件')     
+    return dict(code=0,data=data,message='ok')    
+
 
 @view('awardlist.html')
 @get('/awardlist')

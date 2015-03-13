@@ -49,6 +49,7 @@ $(function(){
 			dataType:'json',
 			success:function(response){
 				if (response.code == '0') check_web =  true;
+				else check_web = false
 				cb(check_web);
 				return;
 				console.log('服务器检测',false)

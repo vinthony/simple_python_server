@@ -74,3 +74,23 @@
 .todo-list a:hover{
 
 }
+.btn-search{
+	color: white;
+	width: 100px;
+	background-color:#4C8EFA;
+}
+.btn-search:hover{
+	color: white;
+}
+.search-item-wrapper{
+	display: flex;
+}
+.search-item{
+	text-align: center;
+	flex:auto;
+	vertical-align: middle;
+}
+.search-item .form-control{
+	display: inline-block;
+	width: 70%
+}

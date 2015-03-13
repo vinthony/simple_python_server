@@ -20,26 +20,21 @@ class User(Model):
 	image = StringField(ddl='varchar(500)')
 	created_at = FloatField(updatable=False,default = time.time)
 
-class Blog(Model):
-	__table__ = 'blogs'
+class Award(Model):
+	__table__ = 'award'
 
 	id = StringField(primary_key=True,default=next_id,ddl='varchar(50)')	
-	user_id = StringField(updatable=False,ddl='varchar(50)')
-	user_name = StringField(ddl='varchar(50)')
-	user_image = StringField(ddl='varchar(500)')
-	name = StringField(ddl='varchar(50)')
-	summary = StringField(ddl='varchar(200)')
-	content = TextField()
+	award_name = StringField(ddl='varchar(50)')
+	award_user_id = StringField(ddl='varchar(50)')
+	award_is_show = BooleanField()
+	award_content = TextField()
 	created_at = FloatField(updatable = False,default=time.time)
 
-class Comment(Model):
-	__table__ = 'comments'
+class College(Model):
+	__table__ = 'college'
 
 	id = StringField(primary_key=True,default=next_id,ddl='varchar(50)')
-	blog_id = StringField(updatable=False,ddl='varchar(50)')
-	user_id = StringField(updatable=False,ddl='varchar(50)')
-	user_name = StringField(ddl='varchar(50)')
-	user_image = StringField(ddl='varchar(500)')
-	content = TextField()
+	college_id = StringField(updatable=False,ddl='varchar(50)')
+	college_name = StringField(ddl='varchar(50)')
 	created_at = FloatField(updatable=False,default = time.time)	
 		

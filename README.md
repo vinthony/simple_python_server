@@ -10,7 +10,8 @@ a simple blog server base on python
 
 * 页面构建
 * markdown解析
-* interceptor bug
+* interceptor bug(fixed)
+* 利用git同步
 
 ## reference :
  [awesome-python-webapp](https://github.com/michaelliao/awesome-python-webapp)
@@ -30,7 +31,7 @@ a simple blog server base on python
 
 |类别| 信息|
 |----------------|------------|
-|      id(int)        |   primary key |
+|      id(varchar(50))        |   primary key |
 |      name       |   varchar(50)    |
 |      sno			|  int(10)       |
 |      password     |   varchar(50)  |
@@ -48,7 +49,7 @@ a simple blog server base on python
 |    id    |  primary key          |
 |   award_name| varchar(50)   |
 |   award_content|   text        |
-|   award_user_id|    int     |
+|   award_user_id|    varchar(50)     |
 | award_is_show|       boolean|
 |created_at |  varchar(50)  |
 

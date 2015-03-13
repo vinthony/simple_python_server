@@ -1,2 +1,87 @@
 {% extends '__base__.html' %}
 {% block title %}条件查询{% endblock %}
+{% block login_content %}
+ <div class="panel">
+ 	<div class="panel-body search-item-wrapper">
+ 		<div class='search-item'>
+ 			学号：<input type="text" name='sno' class='form-control'>
+ 		</div>
+ 		<div class='search-item'>	
+ 			姓名：<input type="text" name='name' class='form-control'>
+ 		</div>
+ 		<div class='search-item' >	
+ 			年级: <select name="grade" class='form-control'>
+ 				<option value="1">大一</option>
+ 				<option value="2">大二</option>
+ 				<option value="3">大三</option>
+ 				<option value="4">大四</option>
+ 			</select>
+ 		</div>	
+ 		<div class='search-item' >	
+ 			学院：<select name="college" class='form-control'>
+ 				{% for x in college %}
+					<option value="{{x.college_id}}">{{x.college_name}}</option>
+ 				{% endfor%}
+ 			</select>
+	 	</div>
+ 		<div class='search-item'>
+			<button class='btn btn-search'>搜索</button>
+ 		</div>
+ 	</div>
+ </div>
+ <div class="panel">
+ 	<div class="panel-body">
+ 		{% if students %}
+ 		<table class='table table-bordered'>
+ 			<tr class='success'><td>学号</td><td>姓名</td><td>年级</td><td>学院</td></tr>
+ 			<tbody class='search-body'>
+ 				{% for x in students %}
+				<tr><td>{{x.sno}}</td><td>{{x.name}}</td><td>{{x.grade}}</td><td>{{x.college}}</td></tr>
+ 				{% endfor%}
+ 			</tbody>
+ 		</table>
+ 		{% else %}
+ 		<div class="alert alert-danger" role="alert">
+		  当前没有学生请点击<a href="/addstudent" class="alert-link">[添加学生]</a>添加
+		</div>
+ 		{% endif %}
+		
+ 	</div>
+ </div>
+{% endblock %}
+
+{% block script %}
+	<script>
+		$('.btn-search').click(function(){
+			var name = $('input[name=name]').val() || null;
+			var sno = $('input[name=sno]').val() || null;
+			var grade = $('select[name=grade]').val()||null;
+			var college = $('select[college=college]').val()||null;
+			$.ajax({
+				method:'GET',
+				data:{
+					name:name,
+					sno:sno,
+					grade:grade,
+					college:college
+				},
+				dataType:'json',
+				url:'/api/search_student',
+				success:function(response){
+					if(response.code != 0 ){
+						alert(response.message);
+						return;
+					}else{
+						items = response.data;
+						arr = [];
+						for (var i = 0; i < items.length; i++) {
+							item = items[i]
+							arr.push("<tr><td>"+item.sno+"</td><td>"+item.name+"</td><td>"+item.grade+"</td><td>"+item.college+"</td></tr>");
+						};
+						$('.search-body').html(arr.join(''))
+					}
+				}
+			})
+		})
+	</script>
+{% endblock%}
