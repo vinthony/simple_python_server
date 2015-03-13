@@ -3,7 +3,7 @@
 
 import os, re, time, base64, hashlib
 from transwarp import colorlog
-
+from transwarp.db import next_id
 from transwarp.web import get,view,post,ctx,interceptor,seeother,notfound,found,Dict
 from apis import api, APIError, APIValueError, APIPermissionError, APIResourceNotFoundError
 from config import configs
@@ -167,8 +167,6 @@ def getloginName():
 def search():
     # 查询学生
     page = ctx.request.get('p');
-    if page:
-        
     student =User.find_all()
     colleges=College.find_all()
     return returndict(college=colleges,students=student)
@@ -179,15 +177,15 @@ def search_student():
     i = ctx.request
     name = i.get('name').strip().lower()    
     sno = i.get('sno')
-    grade = i.get('grade')
+    year = i.get('year')
     college = i.get('college') 
     temp = Dict();
     if name:
         temp['name'] = name
     if sno:
         temp['sno'] = sno
-    if grade:
-        temp['grade'] = grade
+    if year:
+        temp['year'] = year
     if college:
         temp['college'] = college
     temp_str = ' and '.join([ k+'="'+v+'"' for k,v in temp.iteritems()])
@@ -202,13 +200,35 @@ def search_student():
 @get('/awardlist')
 def awardlist():
     # 获奖情况列表
+    page = ctx.request.get('p');
     return returndict()
+@api
+@get('/api/search_award')
+def search_award():
+    pass
 
 @view('addstudent.html')
 @get('/addstudent')
 def addstudent():
-    return returndict()
+    name = ctx.request.get('name')
+    year = ctx.request.get('year')
+    college = ctx.request.get('college')
+    message = None
+    if name and year and college:
+        sid = len(User.find_by('where year='+year+' and college='+college))+1
+        sno = getlast2(college)+getlast2(year)+str(sid)
+        user=User(name=name,year=year,college=college,sno=sno,email=sno+"@student.edu.cn")
+        user.insert()
+        message = "successful insert %s" % name
+    colleges = College.find_all()
+    return returndict(college=colleges,message=message)
 
+def getlast2(s):
+    if len(s) < 2:
+        return s.zfill(2)
+    if len(s) == 4:
+        return s[2:]    
+    
 @view('addaward.html')
 @get('/addaward')
 def addaward():

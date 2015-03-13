@@ -36,8 +36,8 @@ a simple blog server base on python
 |      sno			|  int(10)       |
 |      password     |   varchar(50)  |
 |      email        |   varchar(50)  |
-|      admin        |   1/0 (boolean) |
-|      grade        |    int(1)      |
+|      identify        |   1/0 (boolean) |
+|      year        |    int(4)      |
 |      college      |    int(2)      |
 |     created_at    |   varchar(50) |
 

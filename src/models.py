@@ -7,7 +7,7 @@ __author__ = 'vinthony@gmail.com'
 import time,uuid
 
 from transwarp.db import next_id
-from transwarp.orm import Model,StringField,BooleanField,FloatField,TextField
+from transwarp.orm import Model,StringField,BooleanField,FloatField,TextField,IntegerField
 
 class User(Model):
 	__table__ = 'users'
@@ -15,14 +15,14 @@ class User(Model):
 	id = StringField(primary_key=True,default=next_id,ddl='varchar(50)')
 	email = StringField(updatable=False,ddl='varchar(50)')
 	password = StringField(ddl='varchar(50)')
-	admin = BooleanField()
+	college = IntegerField()
+	year = IntegerField()
+	identify = BooleanField()
 	name = StringField(ddl='varchar(50)')
-	image = StringField(ddl='varchar(500)')
 	created_at = FloatField(updatable=False,default = time.time)
 
 class Award(Model):
 	__table__ = 'award'
-
 	id = StringField(primary_key=True,default=next_id,ddl='varchar(50)')	
 	award_name = StringField(ddl='varchar(50)')
 	award_user_id = StringField(ddl='varchar(50)')

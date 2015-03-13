@@ -44,7 +44,7 @@ class StringField(Field):
 		super(StringField,self).__init__(**kw)
 
 class IntegerField(Field):
-	def __init__():
+	def __init__(self,**kw):
 		if not 'default' in kw:
 			kw['default'] = 0
 		if not 'ddl' in kw:
