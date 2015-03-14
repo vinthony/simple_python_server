@@ -5,7 +5,7 @@ __author__ = 'vinthony@gmail.com'
 
 
 import time,uuid
-
+import hashlib
 from transwarp.db import next_id
 from transwarp.orm import Model,StringField,BooleanField,FloatField,TextField,IntegerField
 
@@ -14,9 +14,10 @@ class User(Model):
 	
 	id = StringField(primary_key=True,default=next_id,ddl='varchar(50)')
 	email = StringField(updatable=False,ddl='varchar(50)')
-	password = StringField(ddl='varchar(50)')
+	password = StringField(ddl='varchar(50)',default=hashlib.md5('000000').hexdigest())
 	college = IntegerField()
 	year = IntegerField()
+	sno = IntegerField()
 	identify = BooleanField()
 	name = StringField(ddl='varchar(50)')
 	created_at = FloatField(updatable=False,default = time.time)

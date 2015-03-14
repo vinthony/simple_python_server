@@ -37,6 +37,7 @@ def user_interceptor(next):
     try:
         cookie = ctx.request.cookies[_COOKIE_NAME]
         user = parse_signed_cookie(cookie)
+        colorlog.info(user,identify='USER')
         if user:
             colorlog.info('bind user <%s> to session...'% user.name)
         ctx.request.user = user             
@@ -167,23 +168,20 @@ def getloginName():
 def search():
     # 查询学生
     page = ctx.request.get('p');
-    student =User.find_all()
+    student =User.find_by('where identify=0')
     colleges=College.find_all()
     return returndict(college=colleges,students=student)
 
 @api
 @get('/api/search_student')
 def search_student():
-    i = ctx.request
-    name = i.get('name').strip().lower()    
-    sno = i.get('sno')
-    year = i.get('year')
-    college = i.get('college') 
-    temp = Dict();
+    i = ctx.request.input()
+    name = i['name'].strip().lower()    
+    year = i['year']
+    college = i['college']
+    temp = Dict(identify=0);
     if name:
         temp['name'] = name
-    if sno:
-        temp['sno'] = sno
     if year:
         temp['year'] = year
     if college:
@@ -210,18 +208,31 @@ def search_award():
 @view('addstudent.html')
 @get('/addstudent')
 def addstudent():
-    name = ctx.request.get('name')
-    year = ctx.request.get('year')
-    college = ctx.request.get('college')
-    message = None
+    colleges = College.find_all()
+    return returndict(college=colleges)
+
+@api
+@post('/api/addstudent')
+def add_student():
+    i = ctx.request
+    colorlog.info(i,identify='REQUEST')
+    name = i['name']
+    year = i['year']
+    college = i['college']
+    message = 'error happened'
     if name and year and college:
-        sid = len(User.find_by('where year='+year+' and college='+college))+1
-        sno = getlast2(college)+getlast2(year)+str(sid)
-        user=User(name=name,year=year,college=college,sno=sno,email=sno+"@student.edu.cn")
+        sid = len(User.find_by('where year='+year+' and college='+college+' and identify=0'))+1
+        sno = getlast2(college)+getlast2(year)+getlast2(str(sid))
+        colorlog.info(sno,identify='SNO')
+        email = sno+'@student.edu.cn'
+        user_dict = dict(name=name,year=year,college=college,sno=sno,email=email)
+        colorlog.info(user_dict,'USER_DICT')
+        user=User(name=name,year=year,college=college,sno=sno,email=email)
         user.insert()
         message = "successful insert %s" % name
-    colleges = College.find_all()
-    return returndict(college=colleges,message=message)
+    else:
+        return dict(message=message,code='500')    
+    return dict(message=message,code='0')    
 
 def getlast2(s):
     if len(s) < 2:

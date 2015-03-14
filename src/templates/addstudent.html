@@ -48,7 +48,34 @@
  		</form>
  	</div>
  </div>
+ <div class='alert alert-warning alert-dismissable' role="alert" style='display:none'>
+ 		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  		<span></span>
+ 	</div>
 {% endblock %}
 {% block script %}
-
+	<script>
+		$('.btn-search').click(function(e){
+			e.preventDefault();
+			name = $('input[name=name]').val();
+			year = $('select[name=year]').val();
+			college = $('select[name=college]').val();
+			$.ajax({
+				url:'/api/addstudent',
+				method:'POST',
+				data:{
+					name:name,
+					year:year,
+					college:college
+				},
+				dataType:'json',
+				success:function(response){
+					if(response.code==0){
+						$('.alert>span').html(response.message);
+						$('.alert').show();
+					}
+				}
+			})
+		})
+	</script>
 {% endblock%}
