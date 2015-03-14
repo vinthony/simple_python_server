@@ -60,6 +60,5 @@ a simple blog server base on python
 |    id    |  primary key          |
 |  college_name| varchar(50)   |
 |   college_id|   int        |
-|   award_user_id|    int     |
 |created_at |  varchar(50)  |
 

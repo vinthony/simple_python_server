@@ -139,8 +139,6 @@ def checkuser():
     admin = i['identify']
     user = User.find_first('where name=?',name)
     error = None
-    colorlog.info(user)
-    colorlog.info(admin)
     if user is None:
         error='Invalid name.'
     elif user.password != password:

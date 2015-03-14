@@ -12,8 +12,13 @@ import os
 
 from transwarp import db
 from transwarp.web import WSGIApplication, Jinja2TemplateEngine
-
+from models import College
 from config import configs
+
+def college_filter(id):
+    college = College.find_by('where college_id=?',id)
+    return college[0].college_name
+
 def datetime_filter(t):
     delta = int(time.time() - t)
     if delta < 60:
@@ -34,14 +39,13 @@ wsgi = WSGIApplication(os.path.dirname(os.path.abspath(__file__)))
 
 template_engine = Jinja2TemplateEngine(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates'))
 template_engine.add_filter('datetime', datetime_filter)
-
+template_engine.add_filter('getcollegename',college_filter)
 wsgi.template_engine = template_engine
 
 import urls
 
 wsgi.add_module(urls)
 wsgi.add_interceptor(urls.user_interceptor)
-# wsgi.add_interceptor(urls.manage_interceptor)
 
 if __name__ == '__main__':
     wsgi.run(9000, host='0.0.0.0')
