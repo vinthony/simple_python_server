@@ -4,12 +4,12 @@ a simple blog server base on python
 
 #### getting start:
 
-	./src/pymonitor.py wsgiapp.py
+	cd src && ./pymonitor.py wsgiapp.py
 
-##### todos:
+#### todos:
 
-* 页面构建
-* markdown解析
+* 增加获奖信息
+* 分页 
 * interceptor bug(fixed)
 * 利用git同步
 
@@ -60,5 +60,14 @@ a simple blog server base on python
 |    id    |  primary key          |
 |  college_name| varchar(50)   |
 |   college_id|   int        |
+|created_at |  varchar(50)  |
+
+
+## 获奖类型表：
+|类别| 信息|
+|----------------|------------|
+|    id    |  primary key          |
+|  award_type| varchar(50)   |
+|   award_type_id|   int        |
 |created_at |  varchar(50)  |
 

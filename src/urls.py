@@ -173,23 +173,32 @@ def search():
 @api
 @get('/api/search_student')
 def search_student():
-    i = ctx.request.input()
+    i = ctx.request
     name = i['name'].strip().lower()    
-    year = i['year']
-    college = i['college']
-    temp = Dict(identify=0);
+    year = str(i['year'])
+    sno = str(i['sno'])
+    college = str(i['college'])
+    temp = Dict(identify='0');
     if name:
         temp['name'] = name
     if year:
         temp['year'] = year
     if college:
         temp['college'] = college
+    if sno:
+        temp['sno'] = sno
     temp_str = ' and '.join([ k+'="'+v+'"' for k,v in temp.iteritems()])
     colorlog.info(temp_str,identify='SQL');
-    data = User.find_by('where '+temp_str)        
-    if not name and not sno and not grade and not college:
+    data = User.find_by('where '+temp_str) 
+    for x in data:
+        x.college = college_filter(x.college)
+    if not name and not sno and not year and not college:
         return dict(code=500,message='没有筛选条件')     
     return dict(code=0,data=data,message='ok')    
+
+def college_filter(id):
+    college = College.find_by('where college_id=?',id)
+    return college[0].college_name
 
 
 @view('awardlist.html')

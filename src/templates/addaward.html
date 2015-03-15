@@ -1,3 +1,91 @@
 {% extends '__base__.html' %}
 {% block title %}录入获奖信息{% endblock %}
 <!-- 可以根据【姓名，学号，年级，学院，】 -->
+{% block login_content %}
+ <div class="panel">
+ 	<div class="panel-body">
+ 		<form method='get'>
+ 			<div class="form-group col-sm-3">
+ 				<label for="name_add">学号：</label>
+ 				<input type="text" name='name' class='form-control' id='name_add' placeholder='获奖学号'>
+ 			</div>
+ 			<div class="form-group col-sm-3">
+ 				<label for="grade_add">奖惩时间：</label>
+ 				<select name="year" id="grade_add" class='form-control'>
+ 					<option value="2006">2006</option>
+					<option value="2007">2007</option>
+					<option value="2008">2008</option>
+					<option value="2009">2009</option>
+					<option value="2010">2010</option>
+					<option value="2011">2011</option>
+					<option value="2012">2012</option>
+					<option value="2013">2013</option>
+					<option value="2014">2014</option>
+					<option value="2015">2015</option>
+					<option value="2014">2014</option>
+					<option value="2015">2015</option>
+					<option value="2016">2016</option>
+					<option value="2017">2017</option>
+					<option value="2018">2018</option>
+					<option value="2019">2019</option>
+					<option value="2020">2020</option>
+					<option value="2021">2021</option>
+					<option value="2022">2022</option>
+					<option value="2023">2023</option>
+					<option value="2024">2024</option>
+ 				</select>
+ 			</div>
+ 			<div class="form-group col-sm-3">
+ 				<label for="college_add">奖惩类型：</label>
+ 				<select name="college" id="college_add" class='form-control'>
+ 					{% for x in college %}
+ 					<option value="{{x.id}}">{{x.college_name}}</option>
+ 					{% endfor%}
+ 				</select>
+ 			</div>
+ 			<div class='col-sm-3' style='height:60px;'>
+ 				
+ 			</div>
+ 			<div class="form-group">
+ 				<form>
+ 					<textarea name="content"  class='form-control' placeholder='具体内容' row='3' value=''>
+ 					</textarea>
+ 				</form>
+ 			</div>
+ 			<div class='from-group col-sm-3'>
+ 				<button class='btn btn-search form-control' style='margin-top:24px'>增加记录</button>	
+ 			</div>
+ 		</form>
+ 	</div>
+ </div>
+ <div class='alert alert-warning alert-dismissable' role="alert" style='display:none'>
+ 		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  		<span></span>
+ 	</div>
+{% endblock %}
+{% block script %}
+	<script>
+		$('.btn-search').click(function(e){
+			e.preventDefault();
+			name = $('input[name=name]').val();
+			year = $('select[name=year]').val();
+			college = $('select[name=college]').val();
+			$.ajax({
+				url:'/api/addstudent',
+				method:'POST',
+				data:{
+					name:name,
+					year:year,
+					college:college
+				},
+				dataType:'json',
+				success:function(response){
+					if(response.code==0){
+						$('.alert>span').html(response.message);
+						$('.alert').show();
+					}
+				}
+			})
+		})
+	</script>
+{% endblock%}
