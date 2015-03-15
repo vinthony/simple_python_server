@@ -2,16 +2,17 @@ $(function(){
 	$('.submit-form').click(function(e){
 		e.preventDefault();
 		var pass = 0;
-		var name = $('input[name=name]').val();
+		var sno = $('input[name=sno]').val();
 		var password = $('input[name=password]').val();
 		var identify = $('input[name=identify]:checked').val()
-		var check_name =checkname(name)
+		var check_sno =checksno(sno)
 		var check_password = checkpassword(password)
 		var check_identify = checkidentify(identify)
-		check(name,password,identify,function(check_web){
-			pass = check_name&&check_password&&check_identify&&check_web? true:false;
+		check(sno,password,identify,function(check_web){
+			console.log(check_web)
+			pass = check_sno&&check_password&&check_identify&&check_web? true:false;
 			if(!pass){
-				$('.error-item').html("用户名或密码错误");
+				$('.error-item').html("学号或密码错误");
 				return;
 			}else{
 				$('.error-item').html(" ");
@@ -20,11 +21,11 @@ $(function(){
 			$('.login-form').submit();	
 		})
 	});
-	function checkname(name){
+	function checksno(sno){
 		// 5~16位_a-zA-Z0-9
-		_re = new RegExp('^[_a-zA-Z0-9]{5,16}$')
-		console.log( '账号检测',_re.test(name))
-		return _re.test(name)
+		_re = new RegExp('^[0-9]{6}$')
+		console.log( '账号检测',_re.test(sno))
+		return _re.test(sno)
 	}
 	function checkpassword(password){
 		_re = new RegExp('^[_a-zA-Z0-9]{5,16}$')
@@ -37,18 +38,18 @@ $(function(){
 		console.log('身份检测',false)
 		return false
 	}
-	function check(name,password,identify,cb){
+	function check(sno,password,identify,cb){
 		$.ajax({
 			method:'POST',
 			data:{
-				name:name,
+				sno:sno,
 				password:password,
 				identify:identify
 			},
 			url:'/api/checkuser',
 			dataType:'json',
 			success:function(response){
-				if (response.code == '0') check_web =  true;
+				if (response.code == 0) check_web =  true;
 				else check_web = false
 				cb(check_web);
 				return;

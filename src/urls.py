@@ -112,13 +112,13 @@ def signout():
 @post('/login')
 def authenticate():
     i = ctx.request.input()
-    name = i.name.strip().lower()
+    sno = i.sno
     password = hashlib.md5(i.password).hexdigest()
     admin = i.identify
-    user = User.find_first('where name=?',name)
+    user = User.find_first('where sno=?',sno)
     error = None
-    if user is None:
-        error='Invalid name.'
+    if sno is None:
+        error='Invalid sno.'
     elif user.password != password:
         error='Invalid password.'
     elif str(user.identify) != admin:
@@ -134,13 +134,13 @@ def authenticate():
 @post('/api/checkuser')
 def checkuser():
     i = ctx.request.input()
-    name = i.name.strip().lower()
+    sno = i.sno
     password = hashlib.md5(i.password).hexdigest()
     admin = i['identify']
-    user = User.find_first('where name=?',name)
+    user = User.find_first('where sno=?',sno)
     error = None
-    if user is None:
-        error='Invalid name.'
+    if sno is None:
+        error='Invalid sno.'
     elif user.password != password:
         error='Invalid password.'
     elif str(user.identify) != admin:
