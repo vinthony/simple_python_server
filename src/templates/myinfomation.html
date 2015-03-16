@@ -21,6 +21,27 @@
 	</div>
 	
 {% endblock %}
+{% block login_content %}
+	<div class='panel'>
+		<div class="panel-body">
+			<table class='table table-bordered'>
+				<tr><td>姓名：</td><td>{{student.name}}</td></tr>
+				<tr><td>学号：</td><td>{{student.sno}}</td></tr>
+				<tr><td>入学时间：</td><td>{{student.year}}年</td></tr>
+				<tr><td>email:</td><td>{{student.email}}</td></tr>
+				<tr><td>学院：</td><td>{{student.college|getcollegename}}</td></tr>
+			</table>
+			{% if user.sno == student.sno %}
+			原始密码：<input type="password" name='old_pass' >
+			新密码：<input type="password" name='new_pass'>
+			新密码确认：<input type="password" name='new_pass_two'>
+			<a class='btn btn-warning modify-password'>修改密码</a>
+			{% else %}
+			{% endif %}
+		</div>
+	</div>
+	
+{% endblock %}
 {% block script %}
 	<script>
 	$('.modify-password').click(function(){
