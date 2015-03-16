@@ -73,6 +73,7 @@
 					if(response.code==0){
 						$('.alert>span').html(response.message);
 						$('.alert').show();
+						$('input[name=name]').val("")
 					}
 				}
 			})

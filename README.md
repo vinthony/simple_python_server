@@ -47,10 +47,12 @@ a simple blog server base on python
 |类别| 信息|
 |----------------|------------|
 |    id    |  primary key          |
-|   award_name| varchar(50)   |
 |   award_content|   text        |
 |   award_user_id|    varchar(50)     |
 | award_is_show|       boolean|
+| award_year|       int(4)|
+| award_type| boolean 1为奖励|
+| award_title |  varchar(255)|
 |created_at |  varchar(50)  |
 
 ## 学院表：
@@ -62,12 +64,4 @@ a simple blog server base on python
 |   college_id|   int        |
 |created_at |  varchar(50)  |
 
-
-## 获奖类型表：
-|类别| 信息|
-|----------------|------------|
-|    id    |  primary key          |
-|  award_type| varchar(50)   |
-|   award_type_id|   int        |
-|created_at |  varchar(50)  |
 

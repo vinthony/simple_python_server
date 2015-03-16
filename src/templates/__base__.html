@@ -5,8 +5,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		{% block meta %} <!-- block meta -->{% endblock %}
 		<title>{% block title %} ? {% endblock %} - 学生奖罚管理系统</title>
-		<link rel="stylesheet" href="static/flat-ui/dist/css/vendor/bootstrap.min.css">
-		<link rel="stylesheet" href="static/styles/base.css">
+		<link rel="stylesheet" href="/static/flat-ui/dist/css/vendor/bootstrap.min.css">
+		<link rel="stylesheet" href="/static/styles/base.css">
 		<style>
 			.nav{
 				float: right;
@@ -39,7 +39,7 @@
 					  </div>
 					  <ul class="nav  navbar-nav" >
 				      {% if user %}
-				      	<li class='float-right'><a href="/u/{{user.name}}">{{ user.name }}</a></li>
+				      	<li class='float-right'><a href="/u/{{user.sno}}">{{ user.name }}</a></li>
 						<li class='float-right'><a href="/signout">登出</a></li>
 				      {% else %}
 				      {% endif %}

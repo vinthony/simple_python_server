@@ -1,2 +1,22 @@
 {% extends '__base__.html' %}
 {% block title %}我的获奖{% endblock %}
+{% block login_student_content %}
+<div class="panel">
+ 	<div class="panel-body">
+ 		{% if awardlist %}
+ 		<table class='table table-bordered'>
+ 			<tr class='success'><td>学号</td><td>姓名</td><td>类别</td><td>标题</td><td>奖惩时间</td><td>创建时间</td></tr>
+ 			<tbody class='search-body'>
+ 				{% for x in awardlist %}
+				<tr><td>{{x.award_user_id}}</td><td><a href='/u/{{x.award_user_id}}'>{{x.award_user_id|getuser}}</a></td><td>{{x.award_type|awardtype}}</td><td><a href='/awards/{{x.id}}'>{{x.award_title}}</a></td><td>{{x.award_year}}</td><td>{{x.created_at|datetime}}</td></tr>
+ 				{% endfor%}
+ 			</tbody>
+ 		</table>
+ 	</div>
+ </div>	
+ 		{% else %}
+ 		<div class="alert alert-danger" role="alert">
+		  没有您的获奖记录
+		</div>
+ 		{% endif %}
+{% endblock %}

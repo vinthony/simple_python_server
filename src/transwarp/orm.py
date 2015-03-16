@@ -125,10 +125,10 @@ class ModelMetaclass(type):
 					if primary_key:
 						raise TypeError('Cannot define more than 1 primary key in class:%s'% name)		
 					if v.updatable:
-						colorlog.warning('NOTE: here change primary_key to non-updatable.')
+						colorlog.info('NOTE: here change primary_key to non-updatable.')
 						v.updatable = False
 					if v.nullable:
-						colorlog.warning('NOTE: change primary_key to non-updatable')
+						colorlog.info('NOTE: change primary_key to non-updatable')
 						v.nullable = False
 					primary_key = v	
 				mappings[k] = v
@@ -186,7 +186,6 @@ class Model(dict):
 	def count_all(cls):
 		return db.select_int('select count(%s) from `%s`' % (cls.__primary_key__.name,cls.__table__))
 
-	@classmethod
 	def update(self):
 		self.pre_update and self.pre_update()
 		L = []
@@ -202,7 +201,9 @@ class Model(dict):
 				args.append(arg)
 		pk = self.__primary_key__.name
 		args.append(getattr(self,pk))
-		db.update('update `%s` set `%s` where %s = ? ' % (self.__table__,','.join(L),pk),*args)
+		colorlog.info('update `%s` set %s where `%s`= ? ' % (self.__table__,','.join(L),pk))
+		print args;
+		db.update('update `%s` set %s where `%s` = ? ' % (self.__table__,','.join(L),pk),*args)
 		return self
 
 	def delete(self):

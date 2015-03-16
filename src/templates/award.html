@@ -1,0 +1,16 @@
+{% extends '__base__.html' %}
+{% block title %}获奖信息{% endblock %}
+{% block login_student_content %}
+	<div class='panel'>
+		<div class="panel-body">
+			<table class='table table-bordered'>
+				<tr><td>名称：</td><td>{{award.award_title}}</td></tr>
+				<tr><td>获奖人:</td><td>{{award.award_user_id|getuser}}</td></tr>
+				<tr><td>类别：</td><td>{{award.award_type|awardtype}}</td></tr>
+				<tr><td>获奖时间：</td><td>{{award.award_year}}年</td></tr>
+				<tr><td>内容：</td><td>{{award.award_content}}</td></tr>
+			</table>
+		</div>
+	</div>
+	
+{% endblock %}

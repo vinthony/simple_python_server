@@ -50,7 +50,7 @@ class _LazyConnection(object):
 	def cursor(self):
 		if self.connection is None : #如果没有 connection 才开一个enginer
 			connection = engine.connect()
-			colorlog.info('open connection <%s>....' % hex(id(connection)))
+			#colorlog.info('open connection <%s>....' % hex(id(connection)))
 			self.connection = connection
 		return self.connection.cursor()		
 
@@ -64,7 +64,7 @@ class _LazyConnection(object):
 		if self.connection: #断开连接
 			connection = self.connection
 			self.connection = None
-			colorlog.info('close connection <%s>...'% hex(id(connection)))
+			#colorlog.info('close connection <%s>...'% hex(id(connection)))
 
 # 数据库引擎
 class _Engine(object):

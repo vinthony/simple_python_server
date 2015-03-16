@@ -25,10 +25,12 @@ class User(Model):
 class Award(Model):
 	__table__ = 'award'
 	id = StringField(primary_key=True,default=next_id,ddl='varchar(50)')	
-	award_name = StringField(ddl='varchar(50)')
 	award_user_id = StringField(ddl='varchar(50)')
-	award_is_show = BooleanField()
+	award_title = StringField(ddl='varchar(255)')
+	award_is_show = BooleanField(default=True)
+	award_type = BooleanField(default=True)
 	award_content = TextField()
+	award_year = StringField(ddl='varchar(50)')
 	created_at = FloatField(updatable = False,default=time.time)
 
 class College(Model):

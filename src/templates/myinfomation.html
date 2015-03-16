@@ -1,2 +1,48 @@
 {% extends '__base__.html' %}
 {% block title %}我的信息{% endblock %}
+{% block login_student_content %}
+	<div class='panel'>
+		<div class="panel-body">
+			<table class='table table-bordered'>
+				<tr><td>姓名：</td><td>{{student.name}}</td></tr>
+				<tr><td>学号：</td><td>{{student.sno}}</td></tr>
+				<tr><td>入学时间：</td><td>{{student.year}}年</td></tr>
+				<tr><td>email:</td><td>{{student.email}}</td></tr>
+				<tr><td>学院：</td><td>{{student.college|getcollegename}}</td></tr>
+			</table>
+			{% if user.sno == student.sno %}
+			原始密码：<input type="password" name='old_pass' >
+			新密码：<input type="password" name='new_pass'>
+			新密码确认：<input type="password" name='new_pass_two'>
+			<a class='btn btn-warning modify-password'>修改密码</a>
+			{% else %}
+			{% endif %}
+		</div>
+	</div>
+	
+{% endblock %}
+{% block script %}
+	<script>
+	$('.modify-password').click(function(){
+		 old_pass = $('input[name=old_pass]').val();
+		 new_pass = $('input[name=new_pass]').val();
+		 new_pass_two = $('input[name=new_pass_two]').val();
+		 if(new_pass!==new_pass_two) alert('新密码不一致');
+		 $.ajax({
+		 	url:'/modifypassowrd',
+		 	method:'POST',
+		 	data:{
+		 		old_pass:old_pass,
+		 		new_pass:new_pass
+		 	},
+		 	dataType:'json',
+		 	success:function(response){
+		 		alert(response.message);
+		 		$('input[name=old_pass]').val('');
+				$('input[name=new_pass]').val('');
+				$('input[name=new_pass_two]').val('');
+		 	}
+		 })
+	})
+	</script>
+{% endblock %}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, re, time, base64, hashlib
+import os, re, datetime,time, base64, hashlib
 from transwarp import colorlog
 from transwarp.db import next_id
 from transwarp.web import get,view,post,ctx,interceptor,seeother,notfound,found,Dict
@@ -12,6 +12,18 @@ from models import User,Award,College
 
 _COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
+def datetime_filter(t):
+    delta = int(time.time() - t)
+    # if delta < 60:
+    #     return u'1分钟前'
+    # if delta < 3600:
+    #     return u'%s分钟前' % (delta // 60)
+    # if delta < 86400:
+    #     return u'%s小时前' % (delta // 3600)
+    # if delta < 604800:
+    #     return u'%s天前' % (delta // 86400)
+    dt = datetime.date.fromtimestamp(t)
+    return u'%s年%s月%s日' % (dt.year, dt.month, dt.day)
 def returndict(**kw):
     user = None
     try:
@@ -21,7 +33,14 @@ def returndict(**kw):
     x = dict(user=user)
     x.update(dict(**kw))
     return x
-
+def user_filter(sno):
+    user = User.find_first('where sno=?',sno)
+    return user.name
+def type_filter(x):
+    if x == 1:
+        return u"奖励"
+    else:
+        return u"惩罚"  
 @view('index.html')
 @get('/')
 def index():
@@ -32,14 +51,15 @@ _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$'
 
 @interceptor('/')
 def user_interceptor(next):
-    colorlog.info('try to bind user from session cookie.')
+   # colorlog.info('try to bind user from session cookie.')
     user = None 
     try:
         cookie = ctx.request.cookies[_COOKIE_NAME]
         user = parse_signed_cookie(cookie)
-        colorlog.info(user,identify='USER')
+       # colorlog.info(user,identify='USER')
         if user:
-            colorlog.info('bind user <%s> to session...'% user.name)
+            pass
+         #   colorlog.info('bind user <%s> to session...'% user.name)
         ctx.request.user = user             
     except Exception,e:
         print e;           
@@ -127,7 +147,7 @@ def authenticate():
     cookie = make_signed_cookie(user.id,user.password,max_age)
     ctx.response.set_cookie(_COOKIE_NAME, cookie, max_age=max_age)
     if error:
-        colorlog.info(error)
+        colorlog.info(error,identify='ERROR')
     else:    
         raise seeother('/')
 @api
@@ -188,7 +208,7 @@ def search_student():
     if sno:
         temp['sno'] = sno
     temp_str = ' and '.join([ k+'="'+v+'"' for k,v in temp.iteritems()])
-    colorlog.info(temp_str,identify='SQL');
+    #colorlog.info(temp_str,identify='SQL');
     data = User.find_by('where '+temp_str) 
     for x in data:
         x.college = college_filter(x.college)
@@ -206,23 +226,52 @@ def college_filter(id):
 def awardlist():
     # 获奖情况列表
     page = ctx.request.get('p');
-    return returndict()
+    awards = Award.find_by('where award_is_show=1');
+    return returndict(awards=awards)
 @api
 @get('/api/search_award')
 def search_award():
-    pass
+    i= ctx.request
+    year = i['year']
+    sno = i['sno']
+    award_title=i['award_title']
+    award_type =i['award_type']
+    temp = Dict(award_is_show='1');    
+    if year:
+        temp['award_year'] = year
+    if award_title:
+        temp['award_title'] = award_title
+    if sno:
+        temp['sno'] = sno
+    if award_type:
+        temp['award_type'] = award_type
+    temp_str = ' and '.join([ k+'="'+v+'"' for k,v in temp.iteritems()])
+    data = Award.find_by('where '+temp_str)  
+    colorlog.info(data,identify='SEARCH_AWARD')      
+    for x in data:
+        x.username = user_filter(x.award_user_id)
+        x.award_type = type_filter(x.award_type)
+        x.created_at = datetime_filter(x.created_at)
+    if not sno and not year and not award_title and not award_title:
+        return dict(code=500,message='没有筛选条件')     
+    return dict(code=0,data=data,message='ok')    
 
 @view('addstudent.html')
 @get('/addstudent')
 def addstudent():
     colleges = College.find_all()
     return returndict(college=colleges)
+@view('myaward.html')
+@get('/myaward/:sno')
+def function(sno):
+    awardlist = Award.find_by('where award_is_show = 1 and award_user_id=?',sno)
+    colorlog.info(awardlist,identify='AWARDLIST')
+    return returndict(awardlist=awardlist)
 
 @api
 @post('/api/addstudent')
 def add_student():
     i = ctx.request
-    colorlog.info(i,identify='REQUEST')
     name = i['name']
     year = i['year']
     college = i['college']
@@ -230,7 +279,7 @@ def add_student():
     if name and year and college:
         sid = len(User.find_by('where year='+year+' and college='+college+' and identify=0'))+1
         sno = getlast2(college)+getlast2(year)+getlast2(str(sid))
-        colorlog.info(sno,identify='SNO')
+        #colorlog.info(sno,identify='SNO')
         email = sno+'@student.edu.cn'
         user_dict = dict(name=name,year=year,college=college,sno=sno,email=email)
         colorlog.info(user_dict,'USER_DICT')
@@ -252,14 +301,47 @@ def getlast2(s):
 def addaward():
     return returndict()    
 
-@view('myaward.html')
-@get('/myaward')
-def myaward():
-    return returndict()
+@api
+@post('/api/addaward')
+def add_award():
+    i = ctx.request
+    sno = i['sno']
+    year = i['year']
+    award_type = i['award_type']
+    award_title = i['award_title'].strip()
+    content = i['content'].strip()
+    if sno and year and award_title and content and award_type:
+        award = Award(award_user_id=sno,award_year=year,award_title=award_title,award_content=content,award_type=award_type)
+        award.insert()
+        message = "successful insert %s" % award_title
+    else:
+        return dict(message=message,code='500')    
+    return dict(message=message,code='0')        
 
 @view('myinfomation.html')
-@get('/myinfomation')
-def myinfomation():
-    return returndict()    
+@get('/u/:sno')
+def myinfomation(sno):
+    user = User.find_first('where sno=?',sno)
+    return returndict(student=user)    
 
+@view('award.html')
+@get('/awards/:id')
+def award_id(id):
+    award = Award.find_first('where id=?',id)
+    return returndict(award=award)
+
+@view('forgetpassword.html')
+@get('/forgetpassword')
+def forgetpassword():
+    pass
+@api
+@post('/modifypassowrd')
+def modifypassowrd():
+    i = ctx.request
+    u = ctx.request.user
+    if u.password != hashlib.md5(i['old_pass']).hexdigest():
+        return dict(message="密码错误！")    
+    u.password = hashlib.md5(i['new_pass']).hexdigest()
+    u.update()
+    return dict(message="修改密码成功！")
 

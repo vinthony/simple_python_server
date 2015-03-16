@@ -6,8 +6,8 @@
  	<div class="panel-body">
  		<form method='get'>
  			<div class="form-group col-sm-3">
- 				<label for="name_add">学号：</label>
- 				<input type="text" name='name' class='form-control' id='name_add' placeholder='获奖学号'>
+ 				<label for="sno">学号：</label>
+ 				<input type="text" name='sno' class='form-control' id='sno' placeholder='获奖学号'>
  			</div>
  			<div class="form-group col-sm-3">
  				<label for="grade_add">奖惩时间：</label>
@@ -36,21 +36,20 @@
  				</select>
  			</div>
  			<div class="form-group col-sm-3">
- 				<label for="college_add">奖惩类型：</label>
- 				<select name="college" id="college_add" class='form-control'>
- 					{% for x in college %}
- 					<option value="{{x.id}}">{{x.college_name}}</option>
- 					{% endfor%}
+ 				<label for="award_type_add">奖惩类型：</label>
+ 				<select name="award_type" id="award_type_add" class='form-control'>
+ 					<option value="1">奖励</option>
+ 					<option value="0">惩罚</option>
  				</select>
  			</div>
- 			<div class='col-sm-3' style='height:60px;'>
- 				
+ 			<div class='form-group col-sm-3' style='height:60px;'>
+ 				<label>标题：</label>
+ 				<input type="text" name='award_title' class='form-control' placeholder='标题'>
  			</div>
  			<div class="form-group">
- 				<form>
+ 				<label for="">具体内容:</label>
  					<textarea name="content"  class='form-control' placeholder='具体内容' row='3' value=''>
  					</textarea>
- 				</form>
  			</div>
  			<div class='from-group col-sm-3'>
  				<button class='btn btn-search form-control' style='margin-top:24px'>增加记录</button>	
@@ -67,22 +66,29 @@
 	<script>
 		$('.btn-search').click(function(e){
 			e.preventDefault();
-			name = $('input[name=name]').val();
+			sno = $('input[name=sno]').val();
 			year = $('select[name=year]').val();
-			college = $('select[name=college]').val();
+			award_type = $('select[name=award_type]').val();
+			award_title=$('input[name=award_title]').val();
+			content = $('textarea').val();
 			$.ajax({
-				url:'/api/addstudent',
+				url:'/api/addaward',
 				method:'POST',
 				data:{
-					name:name,
+					sno:sno,
 					year:year,
-					college:college
+					award_type:award_type,
+					award_title:award_title,
+					content:content
 				},
 				dataType:'json',
 				success:function(response){
 					if(response.code==0){
 						$('.alert>span').html(response.message);
 						$('.alert').show();
+						$('input[name=sno]').val("");
+						$('input[name=award_title]').val("");
+						$('textarea').val("");
 					}
 				}
 			})
