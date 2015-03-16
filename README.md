@@ -6,11 +6,14 @@ a simple blog server base on python
 
 	cd src && ./pymonitor.py wsgiapp.py
 
+#### online demo
+
+	xsjcxt.sinaapp.com
+
+
 #### todos:
 
-* 增加获奖信息
 * 分页 
-* interceptor bug(fixed)
 * 利用git同步
 
 ## reference :
