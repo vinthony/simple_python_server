@@ -50,7 +50,6 @@ class _LazyConnection(object):
 	def cursor(self):
 		if self.connection is None : #如果没有 connection 才开一个enginer
 			connection = engine.connect()
-			#colorlog.info('open connection <%s>....' % hex(id(connection)))
 			self.connection = connection
 		return self.connection.cursor()		
 
@@ -77,17 +76,17 @@ class _Engine(object):
 engine = None
 
 def create_engine(user,password,database,host='127.0.0.1',port=3306,**kw):
-	import mysql.connector
+	import MySQLdb
 	global engine
 	if engine is not None:
 		raise DBError('engine is already inited')
-	params = dict(user=user,password=password,database=database,host=host,port=port)
-	defaults = dict(use_unicode=True,charset='utf8',collation='utf8_general_ci',autocommit=False)
+	params = dict(user=user,passwd=password,db=database,host=host,port=port)
+	defaults = dict(use_unicode=True,charset='utf8')
 	for k,v in defaults.iteritems(): #kw为一个key，value对
 	 	params[k] = kw.pop(k,v) # dict.pop(key[,default]) 如果dict中已经有key就returnkey 否则 return default 值
 	params.update(kw) #update([other]) 用kw覆盖params中存在的键值对
-	params['buffered'] = True
-	engine = _Engine(lambda: mysql.connector.connect(**params)) #将所有的参数传递给engine
+	# params['buffered'] = True
+	engine = _Engine(lambda: MySQLdb.connect(**params)) #将所有的参数传递给engine
 	colorlog.info('Init mysql engine <%s> ok' % hex(id(engine)))
 
 # 数据库上下文
@@ -193,6 +192,7 @@ def _select(sql,first,*args):
 	colorlog.info('SQL:%s,ARGS:%s'%(sql,args))
 	try:
 		cursor = _db_ctx.connection.cursor()
+		print cursor.description
 		cursor.execute(sql,args)
 		if cursor.description: #返回每一列的名称
 			names = [ x[0] for x in cursor.description ]
@@ -256,6 +256,7 @@ if __name__ == '__main__': #
 	insert('user',**u1)
 	u2 = select_one('select * from user where id=?', 2000)
 	print u2.name
+
 
 
 
