@@ -67,4 +67,9 @@ a simple blog server base on python
 |   college_id|   int        |
 |created_at |  varchar(50)  |
 
+### todo
 
+- [ ] 把学生都改成老师
+- [ ] 把增加获奖记录放到老师里面
+- [ ] 增加一个统计界面
+- [ ] 加上传图片功能
