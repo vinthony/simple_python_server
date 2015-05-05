@@ -30,6 +30,7 @@ class Award(Model):
 	award_is_show = BooleanField(default=True)
 	award_type = BooleanField(default=True)
 	award_content = TextField()
+	image = StringField(ddl='varchar(500)')
 	award_year = StringField(ddl='varchar(50)')
 	created_at = FloatField(updatable = False,default=time.time)
 

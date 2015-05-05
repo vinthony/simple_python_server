@@ -5,7 +5,7 @@
  	<div class="panel-body">
  		{% if awardlist %}
  		<table class='table table-bordered'>
- 			<tr class='success'><td>学号</td><td>姓名</td><td>类别</td><td>标题</td><td>奖惩时间</td><td>创建时间</td></tr>
+ 			<tr class='success'><td>教工号</td><td>姓名</td><td>类别</td><td>标题</td><td>奖惩时间</td><td>创建时间</td></tr>
  			<tbody class='search-body'>
  				{% for x in awardlist %}
 				<tr><td>{{x.award_user_id}}</td><td><a href='/u/{{x.award_user_id}}'>{{x.award_user_id|getuser}}</a></td><td>{{x.award_type|awardtype}}</td><td><a href='/awards/{{x.id}}'>{{x.award_title}}</a></td><td>{{x.award_year}}</td><td>{{x.created_at|datetime}}</td></tr>

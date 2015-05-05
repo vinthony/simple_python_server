@@ -4,7 +4,7 @@
  <div class="panel">
  	<div class="panel-body search-item-wrapper">
  		<div class='search-item'>
- 			学号：<input type="text" name='sno' class='form-control'>
+ 			教工号：<input type="text" name='sno' class='form-control'>
  		</div>
  		<!--  -->
  		<div class='search-item'>	
@@ -50,7 +50,7 @@
  	<div class="panel-body">
  		{% if awards %}
  		<table class='table table-bordered'>
- 			<tr class='success'><td>学号</td><td>姓名</td><td>类别</td><td>标题</td><td>奖惩时间</td><td>创建时间</td></tr>
+ 			<tr class='success'><td>教工号</td><td>姓名</td><td>类别</td><td>标题</td><td>奖惩时间</td><td>创建时间</td></tr>
  			<tbody class='search-body'>
  				{% for x in awards %}
 				<tr><td>{{x.award_user_id}}</td><td><a href='/u/{{x.award_user_id}}'>{{x.award_user_id|getuser}}</a></td><td>{{x.award_type|awardtype}}</td><td><a href='/awards/{{x.id}}'>{{x.award_title}}</a></td><td>{{x.award_year}}</td><td>{{x.created_at|datetime}}</td></tr>
@@ -59,7 +59,7 @@
  		</table>
  		{% else %}
  		<div class="alert alert-danger" role="alert">
-		  当前没有学生获奖请点击<a href="/addaward" class="alert-link">[添加获奖]</a>添加
+		  当前没有教师获奖请点击<a href="/addaward" class="alert-link">[添加获奖]</a>添加
 		</div>
  		{% endif %}
 		
@@ -71,7 +71,7 @@
  <div class="panel">
  	<div class="panel-body search-item-wrapper">
  		<div class='search-item'>
- 			学号：<input type="text" name='sno' class='form-control'>
+ 			教工号：<input type="text" name='sno' class='form-control'>
  		</div>
  		<!--  -->
  		<div class='search-item'>	
@@ -79,8 +79,15 @@
  		</div>
  		<div class='search-item' >	
  			 <select name="award_type" class='form-control'>
- 				<option value="1">奖励</option>
- 				<option value="0">惩罚</option>
+ 				<option value="1">校三等奖</option>
+ 					<option value="0">校二等奖</option>
+ 					<option value="2">校一等奖</option>
+ 					<option value="3">省三等奖</option>
+ 					<option value="4">省二等奖</option>
+ 					<option value="5">省一等奖</option>
+ 					<option value="6">国家三等奖</option>
+ 					<option value="7">国家二等奖</option>
+ 					<option value="8">国家一等奖</option>
  			</select>
  		</div>	
  		<div class='search-item' >	
@@ -117,7 +124,7 @@
  	<div class="panel-body">
  		{% if awards %}
  		<table class='table table-bordered'>
- 			<tr class='success'><td>学号</td><td>姓名</td><td>类别</td><td>标题</td><td>奖惩时间</td><td>创建时间</td></tr>
+ 			<tr class='success'><td>教工号</td><td>姓名</td><td>类别</td><td>标题</td><td>奖惩时间</td><td>创建时间</td></tr>
  			<tbody class='search-body'>
  				{% for x in awards %}
 				<tr><td>{{x.award_user_id}}</td><td><a href='/u/{{x.award_user_id}}'>{{x.award_user_id|getuser}}</a></td><td>{{x.award_type|awardtype}}</td><td><a href='/awards/{{x.id}}'>{{x.award_title}}</a></td><td>{{x.award_year}}</td><td>{{x.created_at|datetime}}</td></tr>
@@ -126,7 +133,7 @@
  		</table>
  		{% else %}
  		<div class="alert alert-danger" role="alert">
-		  当前没有学生获奖请点击<a href="/addaward" class="alert-link">[添加获奖]</a>添加
+		  当前没有教工获奖请点击<a href="/addaward" class="alert-link">[添加获奖]</a>添加
 		</div>
  		{% endif %}
 		

@@ -1,16 +1,16 @@
 {% extends '__base__.html' %}
 {% block title %}录入获奖信息{% endblock %}
 <!-- 可以根据【姓名，学号，年级，学院，】 -->
-{% block login_content %}
+{% block login_student_content %}
  <div class="panel">
  	<div class="panel-body">
- 		<form method='get'>
+ 		<form method='post' enctype="multipart/form-data" id="addProductForm" action='javascript:;'>
  			<div class="form-group col-sm-3">
- 				<label for="sno">学号：</label>
- 				<input type="text" name='sno' class='form-control' id='sno' placeholder='获奖学号'>
+ 				<h3>{{user.name}}</h3>
+ 				<input type='hidden' name='sno' value="{{user.sno}}" >
  			</div>
  			<div class="form-group col-sm-3">
- 				<label for="grade_add">奖惩时间：</label>
+ 				<label for="grade_add">奖励时间：</label>
  				<select name="year" id="grade_add" class='form-control'>
  					<option value="2006">2006</option>
 					<option value="2007">2007</option>
@@ -36,10 +36,17 @@
  				</select>
  			</div>
  			<div class="form-group col-sm-3">
- 				<label for="award_type_add">奖惩类型：</label>
+ 				<label for="award_type_add">类型：</label>
  				<select name="award_type" id="award_type_add" class='form-control'>
- 					<option value="1">奖励</option>
- 					<option value="0">惩罚</option>
+ 					<option value="1">校三等奖</option>
+ 					<option value="0">校二等奖</option>
+ 					<option value="2">校一等奖</option>
+ 					<option value="3">省三等奖</option>
+ 					<option value="4">省二等奖</option>
+ 					<option value="5">省一等奖</option>
+ 					<option value="6">国家三等奖</option>
+ 					<option value="7">国家二等奖</option>
+ 					<option value="8">国家一等奖</option>
  				</select>
  			</div>
  			<div class='form-group col-sm-3' style='height:60px;'>
@@ -47,12 +54,16 @@
  				<input type="text" name='award_title' class='form-control' placeholder='标题'>
  			</div>
  			<div class="form-group">
+ 				<label for="">上传图片:</label>
+ 					<input type='file' name ='image'  class='form-control' />
+ 			</div>
+ 			<div class="form-group">
  				<label for="">具体内容:</label>
  					<textarea name="content"  class='form-control' placeholder='具体内容' row='3' value=''>
  					</textarea>
  			</div>
  			<div class='from-group col-sm-3'>
- 				<button class='btn btn-search form-control' style='margin-top:24px'>增加记录</button>	
+ 				<button type='submit' class='btn btn-search form-control' style='margin-top:24px'>增加记录</button>	
  			</div>
  		</form>
  	</div>
@@ -64,23 +75,16 @@
 {% endblock %}
 {% block script %}
 	<script>
-		$('.btn-search').click(function(e){
+		$('#addProductForm').submit(function(e){
 			e.preventDefault();
-			sno = $('input[name=sno]').val();
-			year = $('select[name=year]').val();
-			award_type = $('select[name=award_type]').val();
-			award_title=$('input[name=award_title]').val();
-			content = $('textarea').val();
+			var formData = new FormData($(this)[0]);
+			console.log(formData)
 			$.ajax({
 				url:'/api/addaward',
 				method:'POST',
-				data:{
-					sno:sno,
-					year:year,
-					award_type:award_type,
-					award_title:award_title,
-					content:content
-				},
+				data:formData,
+				contentType: false,
+        		processData: false,
 				dataType:'json',
 				success:function(response){
 					if(response.code==0){

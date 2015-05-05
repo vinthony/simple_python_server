@@ -4,13 +4,13 @@
  <div class="panel">
  	<div class="panel-body search-item-wrapper">
  		<div class='search-item'>
- 			学号：<input type="text" name='sno' class='form-control'>
+ 			教工号：<input type="text" name='sno' class='form-control'>
  		</div>
  		<div class='search-item'>	
  			姓名：<input type="text" name='name' class='form-control'>
  		</div>
  		<div class='search-item' >	
- 			入学: <select name="year" class='form-control'>
+ 			入职: <select name="year" class='form-control'>
  					<option value="2006">2006</option>
 					<option value="2007">2007</option>
 					<option value="2008">2008</option>
@@ -50,7 +50,7 @@
  	<div class="panel-body">
  		{% if students %}
  		<table class='table table-bordered'>
- 			<tr class='success'><td>学号</td><td>姓名</td><td>入学年份</td><td>学院</td></tr>
+ 			<tr class='success'><td>教工号</td><td>姓名</td><td>入职年份</td><td>学院</td></tr>
  			<tbody class='search-body'>
  				{% for x in students %}
 				<tr><td>{{x.sno}}</td><td><a href='/u/{{x.sno}}'>{{x.name}}</a></td><td>{{x.year}}</td><td>{{x.college|getcollegename}}</td></tr>

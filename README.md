@@ -57,7 +57,7 @@ a simple blog server base on python
 | award_type| boolean 1为奖励|
 | award_title |  varchar(255)|
 |created_at |  varchar(50)  |
-
+| image| varchar(500) |
 ## 学院表：
 
 |类别| 信息|
@@ -69,7 +69,7 @@ a simple blog server base on python
 
 ### todo
 
-- [ ] 把学生都改成老师
-- [ ] 把增加获奖记录放到老师里面
-- [ ] 增加一个统计界面
-- [ ] 加上传图片功能
+- [x] 把学生都改成老师
+- [x] 把增加获奖记录放到老师里面
+- [ ] 增加一个统计界面[统计每年获奖情况]
+- [x] 加上传图片功能

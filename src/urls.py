@@ -7,10 +7,12 @@ from transwarp.db import next_id
 from transwarp.web import get,view,post,ctx,interceptor,seeother,notfound,found,Dict
 from apis import api, APIError, APIValueError, APIPermissionError, APIResourceNotFoundError
 from config import configs
-import md5
+import md5,uuid
 from models import User,Award,College
 
+CHUNKSIZE = 8192
 _COOKIE_NAME = 'awesession'
+UPLOAD_PATH='upload'
 _COOKIE_KEY = configs.session.secret
 def datetime_filter(t):
     delta = int(time.time() - t)
@@ -261,6 +263,7 @@ def search_award():
 def addstudent():
     colleges = College.find_all()
     return returndict(college=colleges)
+
 @view('myaward.html')
 @get('/myaward/:sno')
 def function(sno):
@@ -305,13 +308,17 @@ def addaward():
 @post('/api/addaward')
 def add_award():
     i = ctx.request
+    # print i.image
     sno = i['sno']
     year = i['year']
     award_type = i['award_type']
     award_title = i['award_title'].strip()
+    image = i['image']
     content = i['content'].strip()
-    if sno and year and award_title and content and award_type:
-        award = Award(award_user_id=sno,award_year=year,award_title=award_title,award_content=content,award_type=award_type)
+    if sno and year and award_title and content and award_type and image:
+        image_path = upload(image)
+        print image_path
+        award = Award(award_user_id=sno,award_year=year,award_title=award_title,award_content=content,award_type=award_type,image=image_path)
         award.insert()
         message = "successful insert %s" % award_title
     else:
@@ -323,6 +330,16 @@ def add_award():
 def myinfomation(sno):
     user = User.find_first('where sno=?',sno)
     return returndict(student=user)    
+
+def upload(image):
+    filename = os.path.join(UPLOAD_PATH,hashlib.md5(image.filename.encode('utf-8')).hexdigest()+uuid.uuid4().hex)
+    print filename
+    with open(filename,'w') as f:
+        chunk = image.file.read(CHUNKSIZE)
+        while chunk:
+            f.write(chunk)
+            chunk = image.file.read(CHUNKSIZE)
+    return filename
 
 @view('award.html')
 @get('/awards/:id')

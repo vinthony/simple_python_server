@@ -22,10 +22,8 @@ def user_filter(sno):
     user = User.find_first('where sno=?',sno)
     return user.name
 def type_filter(x):
-    if x == 1:
-        return u"奖励"
-    else:
-        return u"惩罚"    
+    arr = [u"校二等奖",u"校三等奖",u"校一等奖",u"省三等奖",u"省二等奖",u"省一等奖",u"国家三等奖",u"国家二等奖",u"国家一等奖"]
+    return arr[int(x)]    
 def datetime_filter(t):
     delta = int(time.time() - t)
     # if delta < 60:
