@@ -12,5 +12,8 @@ configs = {
 	},
 	'session':{
 		'secret':'AeEsOmE'
-	}
+	},
+	  'storage':{
+        'bucket':'code4awesome'
+        }
 }

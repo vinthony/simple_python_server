@@ -7,7 +7,9 @@ from transwarp.db import next_id
 from transwarp.web import get,view,post,ctx,interceptor,seeother,notfound,found,Dict
 from apis import api, APIError, APIValueError, APIPermissionError, APIResourceNotFoundError
 from config import configs
+import sae.storage
 import md5,uuid
+SAE_BUCKET = configs.storage['bucket']
 from models import User,Award,College
 
 CHUNKSIZE = 8192
@@ -333,12 +335,17 @@ def myinfomation(sno):
 
 def upload(image):
     filename = os.path.join(UPLOAD_PATH,hashlib.md5(image.filename.encode('utf-8')).hexdigest()+uuid.uuid4().hex)
-    print filename
-    with open(filename,'w') as f:
-        chunk = image.file.read(CHUNKSIZE)
-        while chunk:
-            f.write(chunk)
+    if 'SERVER_SOFTWARE' in os.environ:
+       conn = sae.storage.Connection() 
+       bucket = conn.get_bucket(SAE_BUCKET)
+       bucket.put_object(filename,image.file)
+       filename = bucket.generate_url(filename)
+    else:
+        with open(filename,'w') as f:
             chunk = image.file.read(CHUNKSIZE)
+            while chunk:
+                f.write(chunk)
+                chunk = image.file.read(CHUNKSIZE)
     return filename
 
 @view('award.html')

@@ -57,5 +57,4 @@ wsgi.add_interceptor(urls.user_interceptor)
 if __name__ == '__main__':
     wsgi.run(9000, host='0.0.0.0')
 else:
-    import sae
-    application = sae.create_wsgi_app(app.wsgifunc())
+    application = wsgi.get_wsgi_application()
