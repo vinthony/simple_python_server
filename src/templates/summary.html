@@ -1,0 +1,62 @@
+{% extends '__base__.html' %}
+{% block title %}信息汇总表格{% endblock %}
+
+{% block login_content %}
+<style type="text/css">
+    #main{
+        background-color: beige !important;
+    }
+</style>
+<script type="text/javascript" src='http://echarts.baidu.com/build/dist/echarts.js'></script>
+<div id="main" style="height:400px"></div>
+  <script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: 'http://echarts.baidu.com/build/dist'
+            }
+        });
+    </script>
+<script>
+require(
+            [
+                'echarts',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main')); 
+                
+                var option = {
+                      title : {
+                            text: '近十年获奖统计'
+                        },
+                    legend: {
+                        data:['获奖数']
+                    },
+                    xAxis : [
+                        {
+                            type : 'category',
+                            data : {{data_x}}
+                        }
+                    ],
+                    yAxis : [
+                        {
+                            type : 'value'
+                        }
+                    ],
+                    series : [
+                        {
+                            "name":"获奖数",
+                            "type":"bar",
+                            "data":{{data_y}}
+                        }
+                    ]
+                };
+        
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+        );
+    </script>
+{% endblock %}

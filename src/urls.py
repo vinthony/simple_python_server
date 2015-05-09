@@ -369,3 +369,15 @@ def modifypassowrd():
     u.update()
     return dict(message="修改密码成功！")
 
+@view('summary.html')
+@get('/summary')
+def summary():
+    # last ten year
+    dt = datetime.date.fromtimestamp(time.time())
+    current = dt.year
+    last = current - 10
+    re = {}
+    for x in xrange(last,current):
+        re[x] = len(Award.find_by('where award_year=?',year))
+
+    return dict(data_x=re.keys(),data_y=re.values())
