@@ -1,0 +1,81 @@
+{% extends '__base__.html' %}
+{% block title %}修改获奖信息{% endblock %}
+{% block login_content %}
+ <div class="panel">
+ 	<div class="panel-body">
+ 		<form method='post' enctype="multipart/form-data" id="addProductForm" action='javascript:;'>
+ 			<div class="form-group col-sm-3">
+ 				<h3>{{award.award_user_id|getuser}}</h3>
+ 				<input type='hidden' name='sno' value="{{award.award_user_id}}" >
+ 				<input type='hidden' name='id' value="{{award.id}}" >
+ 			</div>
+ 			<div class="form-group col-sm-3">
+ 				<label for="grade_add">奖励时间：</label>
+ 				<select name="year" id="grade_add" class='form-control'>
+ 					{% for item in years%}
+ 						{% if item == award.award_year|int %}
+ 						<option value="{{item}}" selected="selected">{{item}}</option>
+ 						{% else %}
+ 						<option value="{{item}}">{{item}}</option>
+ 						{% endif%}
+ 					{% endfor%}
+ 				</select>
+ 			</div>
+ 			<div class="form-group col-sm-3">
+ 				<label for="award_type_add">类型：</label>
+ 				<select name="award_type" id="award_type_add" class='form-control'>
+ 					{% for item in types %}
+ 						{% if loop.index0 == award.award_type %}
+ 						<option value="{{loop.index0}}" selected="selected">{{item}}</option>
+ 						{% else %}
+ 						<option value="{{loop.index0}}">{{item}}</option>
+ 						{% endif%}
+ 					{% endfor%}
+ 				</select>
+ 			</div>
+ 			<div class='form-group col-sm-3' style='height:60px;'>
+ 				<label>标题：</label>
+ 				<input type="text" name='award_title' class='form-control' placeholder='标题' value="{{award.award_title}}">
+ 			</div>
+ 			<div class="form-group">
+ 				<label for="">上传图片:</label>
+ 					<input type='file' name ='image' placeholder='替换已有图片' class='form-control' filename="{{award.image}}"/>
+ 			</div>
+ 			<div class="form-group">
+ 				<label for="">具体内容:</label>
+ 					<textarea name="content"  class='form-control' placeholder='具体内容' row='3'>{{award.award_content}}</textarea>
+ 			</div>
+ 			<div class='from-group col-sm-3'>
+ 				<button type='submit' class='btn btn-search form-control' style='margin-top:24px'>修改记录</button>	
+ 			</div>
+ 		</form>
+ 	</div>
+ </div>
+ <div class='alert alert-warning alert-dismissable' role="alert" style='display:none'>
+ 		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  		<span></span>
+ 	</div>
+{% endblock %}
+{% block script %}
+	<script>
+		$('#addProductForm').submit(function(e){
+			e.preventDefault();
+			var formData = new FormData($(this)[0]);
+			console.log(formData)
+			$.ajax({
+				url:'/modifyawardecho',
+				method:'POST',
+				data:formData,
+				contentType: false,
+        		processData: false,
+				dataType:'json',
+				success:function(response){
+					if(response.code==0){
+						$('.alert>span').html(response.message);
+						$('.alert').show();
+					}
+				}
+			})
+		})
+	</script>
+{% endblock%}

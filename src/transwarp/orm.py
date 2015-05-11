@@ -135,7 +135,7 @@ class ModelMetaclass(type):
 		if not primary_key:
 			raise TypeError('Primary key not defined in class:%s' % name)
 		for k in mappings.iterkeys():
-			attrs.pop(k)
+			attrs.pop(k)	
 		if not '__table__' in attrs:
 			attrs['__table__'] = name.lower()
 		attrs['__mappings__'] = mappings
@@ -190,20 +190,21 @@ class Model(dict):
 		self.pre_update and self.pre_update()
 		L = []
 		args = []
-		for k,v in self.__mappings__.iteritems():
+		for k, v in self.__mappings__.iteritems():
 			if v.updatable:
-				if hasattr(self,k):
-					arg = getattr(self,k)
+				if hasattr(self, k):
+					arg = getattr(self, k)
 				else:
 					arg = v.default
-					setattr(self,k,arg)
-				L.append('`%s`=?' % k )
-				args.append(arg)
+					setattr(self, k, arg)
+ 				L.append('`%s`=?' % k)
+ 				args.append(arg)
+
 		pk = self.__primary_key__.name
-		args.append(getattr(self,pk))
-		colorlog.info('update `%s` set %s where `%s`= ? ' % (self.__table__,','.join(L),pk))
-		print args;
-		db.update('update `%s` set %s where `%s` = ? ' % (self.__table__,','.join(L),pk),*args)
+		print self
+		print self.__mappings__
+		args.append(getattr(self, pk))
+		db.update('update `%s` set %s where %s=?' % (self.__table__, ','.join(L), pk), *args)
 		return self
 
 	def delete(self):

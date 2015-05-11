@@ -20,7 +20,9 @@ def college_filter(id):
     return college[0].college_name
 def user_filter(sno):
     user = User.find_first('where sno=?',sno)
-    return user.name
+    if user:
+        return user.name
+    return None    
 def type_filter(x):
     arr = [u"校二等奖",u"校三等奖",u"校一等奖",u"省三等奖",u"省二等奖",u"省一等奖",u"国家三等奖",u"国家二等奖",u"国家一等奖"]
     return arr[int(x)]    
@@ -55,6 +57,6 @@ wsgi.add_module(urls)
 wsgi.add_interceptor(urls.user_interceptor)
 
 if __name__ == '__main__':
-    wsgi.run(8888, host='0.0.0.0')
+    wsgi.run(9000, host='0.0.0.0')
 else:
     application = wsgi.get_wsgi_application()

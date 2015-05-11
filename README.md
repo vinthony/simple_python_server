@@ -9,7 +9,9 @@ a simple blog server base on python
 #### online demo
 
 	xsjcxt.sinaapp.com
-
+	
+登录账号：000000
+密码：000000
 
 #### todos:
 
@@ -71,5 +73,5 @@ a simple blog server base on python
 
 - [x] 把学生都改成老师
 - [x] 把增加获奖记录放到老师里面
-- [ ] 增加一个统计界面[统计每年获奖情况]
+- [x] 增加一个统计界面[统计每年获奖情况]
 - [x] 加上传图片功能

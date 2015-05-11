@@ -12,7 +12,7 @@ $(function(){
 			console.log(check_web)
 			pass = check_sno&&check_password&&check_identify&&check_web? true:false;
 			if(!pass){
-				$('.error-item').html("学号或密码错误");
+				$('.error-item').html("教工号或密码错误");
 				return;
 			}else{
 				$('.error-item').html(" ");

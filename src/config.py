@@ -7,7 +7,7 @@ Configuration
 
 __author__ = 'Michael Liao'
 
-import config_default
+import config_default,os
 
 class Dict(dict):
     '''
@@ -47,11 +47,13 @@ def toDict(d):
 
 configs = config_default.configs
 
-try:
-    import sae
-    import config_override
-    configs = merge(configs, config_override.configs)
-except ImportError:
-    pass
+if 'SERVER_SOFTWARE' in os.environ:
+    try:
+        import config_override
+        
+        configs = merge(configs, config_override.configs)
+    except ImportError:
+        pass
 
 configs = toDict(configs)
+

@@ -50,10 +50,10 @@
  	<div class="panel-body">
  		{% if awards %}
  		<table class='table table-bordered'>
- 			<tr class='success'><td>教工号</td><td>姓名</td><td>类别</td><td>标题</td><td>奖惩时间</td><td>创建时间</td></tr>
+ 			<tr class='success'><td>教工号</td><td>姓名</td><td>类别</td><td>标题</td><td>获奖时间</td><td>创建时间</td><td>修改</td><td>删除</td></tr>
  			<tbody class='search-body'>
  				{% for x in awards %}
-				<tr><td>{{x.award_user_id}}</td><td><a href='/u/{{x.award_user_id}}'>{{x.award_user_id|getuser}}</a></td><td>{{x.award_type|awardtype}}</td><td><a href='/awards/{{x.id}}'>{{x.award_title}}</a></td><td>{{x.award_year}}</td><td>{{x.created_at|datetime}}</td></tr>
+				<tr><td>{{x.award_user_id}}</td><td><a href='/u/{{x.award_user_id}}'>{{x.award_user_id|getuser}}</a></td><td>{{x.award_type|awardtype}}</td><td><a href='/awards/{{x.id}}'>{{x.award_title}}</a></td><td>{{x.award_year}}</td><td>{{x.created_at|datetime}}</td><td><a href="/modifyaward/{{x.id}}">修改</a></td><td><a href="/award/delete/{{x.id}}">删除</a></td></tr>
  				{% endfor%}
  			</tbody>
  		</table>
@@ -124,7 +124,7 @@
  	<div class="panel-body">
  		{% if awards %}
  		<table class='table table-bordered'>
- 			<tr class='success'><td>教工号</td><td>姓名</td><td>类别</td><td>标题</td><td>奖惩时间</td><td>创建时间</td></tr>
+ 			<tr class='success'><td>教工号</td><td>姓名</td><td>类别</td><td>标题</td><td>获奖时间</td><td>创建时间</td></tr>
  			<tbody class='search-body'>
  				{% for x in awards %}
 				<tr><td>{{x.award_user_id}}</td><td><a href='/u/{{x.award_user_id}}'>{{x.award_user_id|getuser}}</a></td><td>{{x.award_type|awardtype}}</td><td><a href='/awards/{{x.id}}'>{{x.award_title}}</a></td><td>{{x.award_year}}</td><td>{{x.created_at|datetime}}</td></tr>
@@ -166,7 +166,7 @@
 						arr = [];
 						for (var i = 0; i < items.length; i++) {
 							item = items[i]
-							arr.push("<tr><td>"+item.award_user_id+"</td><td><a href='/u/"+item.award_user_id+"'>"+item.username+"</a></td><td>"+item.award_type+"</td><td><a href='"+item.id+"'>"+item.award_title+"</a></td><td>"+item.award_year+"</td><td>"+item.created_at+"</td></tr>");
+							arr.push("<tr><td>"+item.award_user_id+"</td><td><a href='/u/"+item.award_user_id+"'>"+item.username+"</a></td><td>"+item.award_type+"</td><td><a href='"+item.id+"'>"+item.award_title+"</a></td><td>"+item.award_year+"</td><td>"+item.created_at+"</td><td><a class='btn btn-danger' href='/award/delete/"+item.id+"'>删除</a></td></tr>");
 						};
 						$('.search-body').html(arr.join(''))
 					}

@@ -16,6 +16,9 @@ CHUNKSIZE = 8192
 _COOKIE_NAME = 'awesession'
 UPLOAD_PATH='upload'
 _COOKIE_KEY = configs.session.secret
+def type_filter(x):
+    arr = [u"校二等奖",u"校三等奖",u"校一等奖",u"省三等奖",u"省二等奖",u"省一等奖",u"国家三等奖",u"国家二等奖",u"国家一等奖"]
+    return arr[int(x)]  
 def datetime_filter(t):
     delta = int(time.time() - t)
     # if delta < 60:
@@ -37,14 +40,11 @@ def returndict(**kw):
     x = dict(user=user)
     x.update(dict(**kw))
     return x
-def user_filter(sno):
+
+def an_user_filter(sno):
     user = User.find_first('where sno=?',sno)
     return user.name
-def type_filter(x):
-    if x == 1:
-        return u"奖励"
-    else:
-        return u"惩罚"  
+ 
 @view('index.html')
 @get('/')
 def index():
@@ -123,9 +123,9 @@ def parse_signed_cookie(cookie_str):
 
 def check_admin():
     user = ctx.request.user
-    if user and user.admin:
-        return 
-    raise APIPermissionError('No permission.')
+    if user and user.identify:
+        return True
+    return False
 
 @get('/signout')
 def signout():
@@ -224,6 +224,11 @@ def college_filter(id):
     college = College.find_by('where college_id=?',id)
     return college[0].college_name
 
+def user_filter(sno):
+    user = User.find_first('where sno=?',sno)
+    if user:
+        return user.name
+    return None  
 
 @view('awardlist.html')
 @get('/awardlist')
@@ -231,7 +236,11 @@ def awardlist():
     # 获奖情况列表
     page = ctx.request.get('p');
     awards = Award.find_by('where award_is_show=1');
-    return returndict(awards=awards)
+    re = list()
+    for x in awards:
+        if user_filter(x.award_user_id):
+            re.append(x)
+    return returndict(awards=re)
 @api
 @get('/api/search_award')
 def search_award():
@@ -253,7 +262,7 @@ def search_award():
     data = Award.find_by('where '+temp_str)  
     colorlog.info(data,identify='SEARCH_AWARD')      
     for x in data:
-        x.username = user_filter(x.award_user_id)
+        x.username = an_user_filter(x.award_user_id)
         x.award_type = type_filter(x.award_type)
         x.created_at = datetime_filter(x.created_at)
     if not sno and not year and not award_title and not award_title:
@@ -375,9 +384,90 @@ def summary():
     # last ten year
     dt = datetime.date.fromtimestamp(time.time())
     current = dt.year
-    last = current - 10
+    last = current - 9
     re = {}
-    for x in xrange(last,current):
-        re[x] = len(Award.find_by('where award_year=?',year))
+    for x in xrange(last,current+1):
+        re[x] = len(Award.find_by('where award_year=?',x))
 
-    return dict(data_x=re.keys(),data_y=re.values())
+    return returndict(data_x=re.keys(),data_y=re.values())
+
+@view('delete.html')
+@get('/u/delete/:id')
+def delete(id):
+    if check_admin():
+        user = User.find_first('where id=?',id)
+        user.delete()
+        return returndict(message="ok")
+    else:
+        return returndict(message="no permission")     
+
+@view('delete.html')
+@get('/award/delete/:id')
+def delete_award(id):
+    if check_admin():
+        award = Award.find_first('where id=?',id)
+        award.delete()
+        return returndict(message="ok") 
+    else:
+        return returndict(message="no permission") 
+
+@view('modifyaward.html')
+@get('/modifyaward/:id')
+def modifyaward(id):
+    arr = [u"校二等奖",u"校三等奖",u"校一等奖",u"省三等奖",u"省二等奖",u"省一等奖",u"国家三等奖",u"国家二等奖",u"国家一等奖"]
+    award = Award.find_first('where id=?',id)
+    return returndict(years=range(2006,2024),award=award,types=arr)
+@api
+@post('/modifyawardecho')    
+def modifyawardecho():
+    message="error"
+    i = ctx.request
+    sno = i['sno']
+    id = i['id']
+    year = i['year']
+    award_type = i['award_type']
+    award_title = i['award_title'].strip()
+    image = i['image']
+    content = i['content'].strip()
+    if sno and year and award_title and content and award_type and image:
+        image_path = upload(image)
+        award = Award.find_first("where id=?",id)
+        award.award_user_id = sno
+        award.award_year = year
+        award.award_title=award_title
+        award.award_content = content
+        award.award_type = award_type
+        award.image = image
+        award.update()
+        message = "successful update %s" % award_title
+    else:
+        return dict(message=message,code='500')    
+    return dict(message=message,code='0')   
+
+@view('modify.html')
+@get('/u/update/:id')
+def modifyuser(id):
+    user = User.get(id)
+    colleges=College.find_all()
+    return returndict(teacher=user,years=range(2006,2024),college = colleges)
+
+
+@api
+@post('/modifyuserecho')
+def modifyuserecho():
+    i = ctx.request
+    name = i['name']
+    year = i['year']
+    id = i['id']
+    college = i['college']
+    message = 'error happened'
+    if name and year and college:
+        user=User.get(id)
+        user.name = name
+        user.year = year
+        user.college = college 
+        user.update()
+        message = "successful insert %s" % name
+    else:
+        return dict(message=message,code='500')    
+    return dict(message=message,code='0')    
