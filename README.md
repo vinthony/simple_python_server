@@ -8,7 +8,7 @@ a simple student manager server base on python
 
 #### online demo
 
-	xsjcxt.sinaapp.com
+[sae-xsjcxt.sinaapp.com](xsjcxt.sinaapp.com)
 	
 登录账号：000000
 密码：000000
@@ -46,7 +46,7 @@ a simple student manager server base on python
 |   award_user_id|    varchar(50)     |
 | award_is_show|       boolean|
 | award_year|       int(4)|
-| award_type| boolean 1为奖励|
+| award_type| boolean (级别，分为校级123，市级123，省级123) |
 | award_title |  varchar(255)|
 |created_at |  varchar(50)  |
 | image| varchar(500) |
